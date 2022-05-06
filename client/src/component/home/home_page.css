@@ -15,3 +15,55 @@ label {
 input {
     display: inline;
 }
+
+.book-img {
+    max-width: 160px;
+    max-height: 180px;
+    padding: 10px 30px;
+    background-color: white;
+}
+
+.item-box {
+    width:fit-content;
+    border-radius: 10px;
+    border: 1px solid black;
+    margin: 10px 15px;
+    transition: 0.1s all ease;
+    cursor: pointer;
+}
+
+.item-box:hover {
+    transform: scale(1.025);
+}
+
+.item-box-body {
+    background-color: cornflowerblue;
+    color: white;
+    padding: 0px 10px;
+    border-top: 1px solid gray;
+    border-bottom-left-radius: inherit;
+    border-bottom-right-radius: inherit;
+}
+
+p {
+    padding: 0;
+    margin: 0;
+}
+
+.item-title {
+    padding: 10px 0;
+    text-align: center;
+}
+
+.item-header {
+    padding: 0px 15px;
+    font-size: 0.8rem;
+    background-color: white;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    font-size: 0.9rem;
+}
+
+.bold {
+    font-weight: bolder;
+}

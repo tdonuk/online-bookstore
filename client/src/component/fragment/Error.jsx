@@ -1,7 +1,7 @@
 import React from "react";
 import {FaWindowClose} from "react-icons/fa";
 
-export default class error extends React.Component {
+export default class Error extends React.Component {
     constructor(props) {
         super(props);
 
@@ -15,9 +15,9 @@ export default class error extends React.Component {
         const{icon, message} = this.state;
 
         return(
-            <div className={"flex alert modal-alert error"}>
+            <div className={"flex alert error"}>
                 {icon}
-                <p>{message}</p>
+                <p className="flex-center-align">{message}</p>
             </div>
         );
     }

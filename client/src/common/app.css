@@ -21,9 +21,12 @@ body {
 
     box-sizing: border-box;
 
-    background: navajowhite !important;
-
     font-family: Tahoma;
+}
+
+.container {
+    width: 100vw;
+    height: 100vh;
 }
 
 .secondary-element {
@@ -65,7 +68,7 @@ body {
 }
 
 .primary {
-    color: #3676ad;
+    color: cornflowerblue;
 }
 
 .secondary {
@@ -73,7 +76,7 @@ body {
 }
 
 .primary-background {
-    background-color: #c6906d;
+    background-color: antiquewhite;
 }
 
 .secondary-background {
@@ -108,15 +111,20 @@ input {
     height: fit-content;
 }
 
-.standard-button {
-    padding: 12px 12px;
+.standart-button {
+    padding: 12px;
 
     font-size: 1rem;
 
     border: 1px solid black;
+    background-color:rgba(255, 255, 255, 0.51);
 
     border-radius: 5px;
     cursor: pointer;
+}
+
+.standart-button:hover {
+    background-color: rgb(255,255,255, 0.76);
 }
 
 .action-element:hover {
@@ -177,6 +185,10 @@ input {
     cursor: pointer;
 }
 
+.big-alert {
+    margin: 10px;
+}
+
 .modal-alert {
     text-align: left;
 }
@@ -184,6 +196,11 @@ input {
 .right-align {
     text-align: right;
     text-align: -moz-right;
+}
+
+.left-align {
+    text-align: left;
+    text-align: -moz-left;
 }
 
 .center-container {
@@ -227,7 +244,7 @@ input {
 .dropdown-option-text {
     text-decoration: none;
     color: black;
-    padding: 0px 15px;
+    padding: 10px 15px;
 }
 
 .dropdown-title {
@@ -255,6 +272,10 @@ input {
     display: flex;
 }
 
+.inline-flex {
+    display: inline flex;
+}
+
 .flex-direction-column {
     display: flex;
     flex-direction: column;
@@ -262,6 +283,10 @@ input {
 
 .space-between {
     justify-content: space-between;
+}
+
+.space-around {
+    justify-content: space-around;
 }
 
 .flex-center-align {

@@ -1,15 +1,17 @@
 
+
 .form-container {
     border: 1px solid black;
 
     width: fit-content;
 
-    margin: 10vh auto;
     padding: 2vh 3vw;
     box-shadow: #323030 2px 2px 1px 1px;
 
     border-radius: 15px;
     background-color: whitesmoke;
+
+    margin: auto;
 }
 
 .form-control {

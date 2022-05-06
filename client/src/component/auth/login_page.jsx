@@ -5,6 +5,7 @@ import '../../common/app.css';
 import './form_page.css';
 import ModalMessage from "../modal/modal_message";
 import Info from "../fragment/Info";
+import Error from "../fragment/Error";
 
 export default class LoginPage extends React.Component {
     constructor(props) {
@@ -20,10 +21,6 @@ export default class LoginPage extends React.Component {
             loading: false,
             errorMessage: null
         };
-    }
-
-    componentDidMount() {
-        document.body.classList.add("primary-background");
     }
 
     handleInput(e) {
@@ -70,8 +67,8 @@ export default class LoginPage extends React.Component {
         const params = new URLSearchParams(window.location.search);
 
         return(
-            <div className="container">
-                <div className="container form-container">
+            <div className="container primary-background flex">
+                <div className="form-container flex-center-align">
                     <div className="form center-form">
                         <h1 className="big-title primary"><strong>Giriş</strong></h1>
                         <div className="form-control-group">
@@ -79,7 +76,7 @@ export default class LoginPage extends React.Component {
                                 <label>Email</label>
                                 <input type="text" name="email" className="input text-input" value={user.email} placeholder="E-posta adresiniz" id="emailField" onChange={(e) => this.handleInput(e)}/>
                                 {submitted && !user.email &&
-                                <p className="alert error">E-posta adresinizi giriniz</p>
+                                <p className="alert error">E-Mail adresinizi giriniz</p>
                                 }
                             </div>
                             <div className="form-control flex-direction-column">
@@ -91,7 +88,7 @@ export default class LoginPage extends React.Component {
                             </div>
                             { errorMessage &&
                             <div className="form-control flex-direction-column">
-                                <p className="alert error">{errorMessage}</p>
+                                <Error message={errorMessage}/>
                             </div>
                             }
 

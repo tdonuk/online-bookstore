@@ -25,7 +25,7 @@ export default class Dropdown extends React.Component {
 
     componentDidMount() {
         window.addEventListener("click", (e) => {
-            if(!e.target.className.includes("dropdown")) {
+            if(!e.target.classList.toString().includes("dropdown")) {
                 this.setState({display: false});
             }
         });

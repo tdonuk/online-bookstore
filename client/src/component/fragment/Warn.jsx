@@ -1,7 +1,7 @@
 import React from "react";
 import {FaExclamationTriangle} from "react-icons/fa";
 
-export default class warn extends React.Component {
+export default class Warn extends React.Component {
     constructor(props) {
         super(props);
 
@@ -15,9 +15,9 @@ export default class warn extends React.Component {
         const{icon, message} = this.state;
 
         return(
-            <div className={"flex alert modal-alert warn"}>
+            <div className={"flex alert warn"}>
                 {icon}
-                <p>{message}</p>
+                <p className="flex-center-align">{message}</p>
             </div>
         );
     }

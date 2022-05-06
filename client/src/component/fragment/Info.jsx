@@ -1,7 +1,7 @@
 import React from "react";
 import {FaExclamationCircle} from "react-icons/fa";
 
-export default class info extends React.Component {
+export default class Info extends React.Component {
     constructor(props) {
         super(props);
 
@@ -15,9 +15,9 @@ export default class info extends React.Component {
         const{icon, message} = this.state;
 
         return(
-            <div className={"flex alert modal-alert info flex-center-align"}>
+            <div className={"flex alert info flex-center-align"}>
                 {icon}
-                <p>{message}</p>
+                <p className="flex-center-align">{message}</p>
             </div>
         );
     }

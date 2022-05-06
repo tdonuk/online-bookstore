@@ -33,8 +33,6 @@ export default class PageHeader extends React.Component {
             }
         ];
 
-        // <a href="https://www.flaticon.com/free-icons/user" title="user icons">User icons created by Bombasticon Studio - Flaticon</a>
-
         const contents = userMenuContent.map((obj) =>
             <div key={obj.key} className="dropdown-option flex space-between" onClick={() => window.location=obj.href}>
                 <p href={obj.href} className="dropdown-option-text">{obj.text}</p>
@@ -55,8 +53,8 @@ export default class PageHeader extends React.Component {
             <div className="page-header flex space-between">
                 <h2 onClick={() => window.location="/"} className="big-title secondary">Bookstore</h2>
                 <div className="flex flex-center-align space-between" id="searchBar">
-                    <input placeholder="ISBN" className="flex-center-align" type="text" id="search"/>
-                    <button className="standard-button width-fit-content flex-center-align no-margin">Ara</button>
+                    <input placeholder="Kitap ismi.." className="flex-center-align" type="text" id="search"/>
+                    <button className="standart-button width-fit-content flex-center-align no-margin">Ara</button>
                     {<Dropdown title={"Ben"} id="userMenu" content={userMenuContent}/>}
                 </div>
             </div>
