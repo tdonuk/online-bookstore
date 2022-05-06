@@ -1,0 +1,11 @@
+com\tdonuk\userservice\model\Phone.class
+com\tdonuk\userservice\service\UserDetailsImpl.class
+com\tdonuk\userservice\model\UserRole.class
+com\tdonuk\userservice\model\entity\UserEntity.class
+com\tdonuk\userservice\service\UserService.class
+com\tdonuk\userservice\model\repository\UserRepository.class
+com\tdonuk\userservice\controller\UserController.class
+com\tdonuk\userservice\UserServiceApplication.class
+com\tdonuk\userservice\model\Name.class
+com\tdonuk\userservice\service\UserDetailServiceImpl.class
+com\tdonuk\userservice\security\WebSecurityConfig.class

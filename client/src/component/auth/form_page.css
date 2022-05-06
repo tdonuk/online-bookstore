@@ -1,0 +1,66 @@
+
+.form-container {
+    border: 1px solid black;
+
+    width: fit-content;
+
+    margin: 10vh auto;
+    padding: 2vh 3vw;
+    box-shadow: #323030 2px 2px 1px 1px;
+
+    border-radius: 15px;
+    background-color: whitesmoke;
+}
+
+.form-control {
+    font-size: 1.2rem;
+    margin: 10px 5px 0 5px;
+    width: available;
+}
+
+p {
+    padding: 0;
+}
+
+.alert {
+    padding: 10px;
+    margin: 10px auto;
+    border-radius: 10px;
+    width: available;
+    width: -moz-available;
+    height: fit-content;
+    font-size: 1rem;
+    color: #212121;
+    text-align: center;
+}
+
+label {
+    width: available;
+    width: -moz-available;
+
+    text-align: left;
+}
+
+.sign {
+    color: red;
+    display: inline;
+}
+
+table h2 {
+    color: #3676ad;
+    padding: 0;
+    margin: 0;
+    margin-top: 20px;
+}
+
+td {
+    padding: 0px 10px;
+
+    width: available;
+    width: -moz-available;
+}
+
+hr{
+    width: available;
+    width: -moz-available;
+}

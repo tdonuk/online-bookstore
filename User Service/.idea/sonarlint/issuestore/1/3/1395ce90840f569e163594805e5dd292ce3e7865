@@ -1,0 +1,15 @@
+
+<
+java:S1948"&Make "user" transient or serializable.(µ¤ ã
+d
+java:S1128"BRemove this unused import 'com.tdonuk.userservice.model.UserRole'.(³¶€ìùÿÿÿÿ8²ÊÛ×‡0
+o
+java:S1128"SRemove this unused import 'com.tdonuk.userservice.model.repository.UserRepository'.(ž‹ôD8›ïó×‡0
+u
+java:S1128"SRemove this unused import 'org.springframework.beans.factory.annotation.Autowired'.(¡ž¸Îùÿÿÿÿ8œïó×‡0
+e
+java:S1128"HRemove this unused import 'org.springframework.context.annotation.Bean'.(‚î‰Þ8³ÊÛ×‡0
+g
+java:S1128"ERemove this unused import 'org.springframework.stereotype.Component'.(Þ÷Ñ¸ÿÿÿÿÿ8•øÝ×‡0
+V
+java:S1128"4Remove this unused import 'java.time.LocalDateTime'.(æÃ§ƒüÿÿÿÿ8ÍÚó×‡0

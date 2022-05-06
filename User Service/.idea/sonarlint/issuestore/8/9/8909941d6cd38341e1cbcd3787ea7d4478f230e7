@@ -1,0 +1,29 @@
+
+[
+java:S4684!"@Replace this persistent entity with a simple POJO or DTO object.(ÀŸè«þÿÿÿÿ
+A
+java:S1452!"&Remove usage of generic wildcard type.(ÀŸè«þÿÿÿÿ
+A
+java:S14522"&Remove usage of generic wildcard type.(ë· ÷ùÿÿÿÿ
+<
+java:S14527"&Remove usage of generic wildcard type.(´Î­×
+<
+java:S1452<"&Remove usage of generic wildcard type.(í´‰–
+A
+java:S1452M"&Remove usage of generic wildcard type.(ÄËÄïÿÿÿÿÿ
+A
+java:S1452R"&Remove usage of generic wildcard type.(ƒÌØÁúÿÿÿÿ
+A
+java:S1452W"&Remove usage of generic wildcard type.(þ¬Îºùÿÿÿÿ
+h
+java:S1128"SRemove this unused import 'com.tdonuk.userservice.model.repository.UserRepository'.(ž‹ôD
+`
+java:S1128"CRemove this unused import 'javax.servlet.http.HttpServletResponse'.(Á¨ïë8ñà­ÿˆ0
+R
+java:S1128"0Remove this unused import 'java.io.IOException'.(ªº»Úýÿÿÿÿ8ñà­ÿˆ0
+I
+java:S1128".Remove this unused import 'java.time.Instant'.(Â‚éñÿÿÿÿÿ
+O
+java:S1128"4Remove this unused import 'java.time.LocalDateTime'.(æÃ§ƒüÿÿÿÿ
+A
+java:S1128"+Remove this unused import 'java.util.Date'.(¸…¼ü

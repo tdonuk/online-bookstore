@@ -1,0 +1,20 @@
+
+[	java:S112"FDefine and throw a dedicated exception instead of using a generic one.(Êñ–•
+`	java:S112"FDefine and throw a dedicated exception instead of using a generic one.(öÌ¿ÿÿÿÿÿ
+[	java:S112"FDefine and throw a dedicated exception instead of using a generic one.(úåÍ–
+`	java:S112"FDefine and throw a dedicated exception instead of using a generic one.(‚ú Èùÿÿÿÿ
+t	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(°¯ÄÔûÿÿÿÿ
+W
+java:S1854"<Remove this useless assignment to local variable "username".(¼–óÛúÿÿÿÿ
+T
+java:S1854"9Remove this useless assignment to local variable "roles".(şîúÿÿÿÿ
+H
+java:S1481"-Remove this unused "username" local variable.(¼–óÛúÿÿÿÿ
+E
+java:S1481"*Remove this unused "roles" local variable.(şîúÿÿÿÿ
+]
+java:S1193"@Replace the usage of the "instanceof" operator by a catch block.(Êñ–•8òÆ·şˆ0
+b
+java:S1193"@Replace the usage of the "instanceof" operator by a catch block.(öÌ¿ÿÿÿÿÿ8òÆ·şˆ0
+A
+java:S1128"+Remove this unused import 'java.util.Date'.(¸…¼ü
