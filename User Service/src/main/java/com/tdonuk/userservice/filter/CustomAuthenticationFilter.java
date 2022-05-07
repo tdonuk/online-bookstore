@@ -8,6 +8,9 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.tdonuk.userservice.model.repository.UserRepository;
 import com.tdonuk.userservice.service.UserDetailsImpl;
 import com.tdonuk.userservice.service.UserDetailsServiceImpl;
+import com.tdonuk.userservice.util.JwtUtils;
+import com.tdonuk.userservice.util.TimeConstants;
+
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowire;
@@ -28,15 +31,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Configurable(preConstruction = true, autowire = Autowire.BY_TYPE)
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-
-    private static final long ONE_HOUR = 1 * 1000 * 60 * 60;
-    private static final long ONE_DAY = ONE_HOUR * 24;
-    private static final long ONE_MONTH = ONE_DAY * 30;
 
     private final AuthenticationManager authenticationManager;
     private final UserDetailsServiceImpl userService;
@@ -85,24 +85,20 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         userService.updateUserLastLoginDate(user.getUser().getUserId(), user.getUser().getLastLoginDate());
 
         Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-
-        String accessToken = JWT.create()
-                .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 4*ONE_HOUR)) // 4 hours
-                .withIssuer(request.getRequestURL().toString())
-                .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
-                .sign(algorithm);
+        
+        String accessToken = JwtUtils.createDefault(user.getUsername(), request.getRequestURI().toString(), List.of(user.getUser().getRole().name()));
 
         String refreshToken = JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + ONE_MONTH)) // 1 month
+                .withExpiresAt(new Date(System.currentTimeMillis() + 5*TimeConstants.ONE_DAY)) // 5 days
                 .withIssuer(request.getRequestURL().toString())
                 .sign(algorithm);
 
         response.setHeader("access_token", accessToken);
         response.setHeader("refresh_token", refreshToken);
         response.setHeader("Content-Type", "application/json; charset=UTF-8");
-
+        
+        user.getUser().setPassword("[Protected]");
 
         new ObjectMapper().writeValue(response.getOutputStream(),user.getUser());
     }

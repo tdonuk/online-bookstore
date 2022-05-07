@@ -1,9 +1,16 @@
 package com.tdonuk.userservice.controller;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.tdonuk.userservice.model.entity.UserEntity;
 import com.tdonuk.userservice.model.repository.UserRepository;
 import com.tdonuk.userservice.service.UserService;
 import com.tdonuk.userservice.util.JwtUtils;
+import com.tdonuk.userservice.util.TimeConstants;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.core.env.Environment;
@@ -17,6 +24,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user/")
@@ -83,14 +91,55 @@ public class UserController {
         return ResponseEntity.ok(userService.findByUsername(username));
     }
 
-    @GetMapping("/authorize")
+    @GetMapping("/check")
     public ResponseEntity<?> checkUser(HttpServletRequest request) {
         try {
-            JwtUtils.validate(request.getHeader("access_token"));
+            JwtUtils.validate(request.getHeader("Authorization"));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        	if(e instanceof TokenExpiredException) {
+            	ResponseEntity<?> response = ResponseEntity.status(401).header("expired", "token has expired").build();
+            	return response;
+        	}
+
+            return ResponseEntity.status(401).body(e.getMessage());
         }
-        return ResponseEntity.ok().build();
+        UserEntity entity = userService.findByEmail(JwtUtils.getUser(request.getHeader("Authorization")));
+        entity.setPassword("[Protected]");
+        return ResponseEntity.ok(entity);
+    }
+    
+    @GetMapping("/token/refresh")
+    public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
+    	String tokenHeader = request.getHeader("Authorization");
+    	if(tokenHeader != null && tokenHeader.startsWith("Bearer ")) {
+    		try {
+        		String refreshToken = tokenHeader.substring("Bearer ".length());
+        		
+        		Algorithm alg = Algorithm.HMAC256("secret");
+        		JWTVerifier verifier = JWT.require(alg).build();
+        		
+        		DecodedJWT decoded = verifier.verify(refreshToken);
+        		
+        		String email = decoded.getSubject();
+        		
+        		UserEntity user = userService.findByEmail(email);
+        		
+        		String accessToken = JwtUtils.createDefault(email, request.getRequestURI().toString(), List.of(user.getRole().name()));
+        		
+        		response.setContentType("application/json");
+        		
+        		return ResponseEntity.ok(accessToken);
+        		
+    		} catch(TokenExpiredException e) {
+    			response.setHeader("expired", e.getMessage());
+    			return ResponseEntity.badRequest().body("Oturumunuz sonlanmıştır. Lütfen yeniden giriş yapınız.");
+    		} catch(Exception e) {
+    			return ResponseEntity.status(401).body("Lütfen giriş yapınız.");
+    		}
+
+    	}
+    	
+    	return ResponseEntity.badRequest().body("Bilinmeyen bir hata oluştu. Lütfen tekrar giriş yapınız.");
     }
 
 }

@@ -16,10 +16,23 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
 public class JwtUtils {
+	
+	public static String getUser(String tokenHeader) {
+        String token = tokenHeader.substring("Bearer ".length());
+        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+        JWTVerifier verifier = JWT.require(algorithm).build();
+
+        DecodedJWT decoded = verifier.verify(token);
+
+        String username = decoded.getSubject();
+        
+        return username;
+	}
 
     public static void validate(String tokenHeader) throws Exception{
         try {
@@ -40,13 +53,28 @@ public class JwtUtils {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
 
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        } catch(Exception e) {
+        } catch(TokenExpiredException e) {
             log.info("An error has occurred while authenticating the user.");
-
-            if(e instanceof TokenExpiredException) throw new Exception("Oturum süreniz sonlanmıştır. Lütfen tekrar giriş yapınız.");
-            else if(e instanceof JWTDecodeException) throw new Exception("Oturum açarken bir sorun oluştu. Lütfen tekrar giriş yapınız.");
-            else throw new Exception("Bilinmeyen bir sorun oluştu. tekrar giriş yapınız.");
+            throw new TokenExpiredException("Oturum süreniz sonlanmıştır. Lütfen tekrar giriş yapınız.");
+        } catch(JWTDecodeException e) {
+            throw new JWTDecodeException("Oturum açarken bir sorun oluştu. Lütfen tekrar giriş yapınız.");
+        } catch(Exception e) {
+            throw new Exception("Bilinmeyen bir sorun oluştu. tekrar giriş yapınız.");
         }
 
+    }
+    
+    public static String create(String subject, long expiresAt, String issuer, Algorithm alg, List<String> roles) {
+    	String token = JWT.create()
+    			.withSubject(subject)
+    			.withExpiresAt(new Date(System.currentTimeMillis() + expiresAt))
+    			.withClaim("roles", roles)
+    			.sign(alg);
+    	
+    	return token;
+    }
+    
+    public static String createDefault(String subject, String issuer, List<String> roles) {
+    	return create(subject, TimeConstants.minutes(10), issuer, Algorithm.HMAC256("secret"), roles);
     }
 }

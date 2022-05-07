@@ -26,8 +26,8 @@ public class JwtUtils {
             String[] roles = decoded.getClaim("roles").asArray(String.class);
 
         } catch(Exception e) {
-            if(e instanceof TokenExpiredException) throw new Exception("Oturum süreniz sonlanmıştır. Lütfen tekrar giriş yapınız.");
-            else if(e instanceof JWTDecodeException) throw new Exception("Oturum açarken bir sorun oluştu. Lütfen tekrar giriş yapınız.");
+            if(e instanceof TokenExpiredException) throw new TokenExpiredException("Oturum süreniz sonlanmıştır. Lütfen tekrar giriş yapınız.");
+            else if(e instanceof JWTDecodeException) throw new JWTDecodeException("Oturum açarken bir sorun oluştu. Lütfen tekrar giriş yapınız.");
             else throw new Exception("Bilinmeyen bir sorun oluştu. Lütfen tekrar giriş yapınız.");
         }
 

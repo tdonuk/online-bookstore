@@ -22,14 +22,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
+	private final List<String> secureList = List.of(
+			"/api/user/register",
+			"/api/user/login",
+			"/api/user/check",
+			"/api/user/token/refresh"
+			);
+	
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(request.getServletPath().equals("/api/user/register") || request.getServletPath().equals("/login") || request.getServletPath().equals("/token/refresh")) {
+        if(secureList.contains(request.getServletPath())) {
             filterChain.doFilter(request, response);
         } else {
             String tokenHeader = request.getHeader(AUTHORIZATION);

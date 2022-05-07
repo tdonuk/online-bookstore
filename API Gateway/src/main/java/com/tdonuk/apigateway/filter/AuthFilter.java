@@ -1,5 +1,6 @@
 package com.tdonuk.apigateway.filter;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tdonuk.apigateway.util.RouteValidator;
@@ -41,6 +42,10 @@ public class AuthFilter implements GatewayFilter {
 
                 jwtUtils.validate(token);
             }
+        } catch(TokenExpiredException e) {
+            response.setStatusCode(HttpStatus.UNAUTHORIZED);
+            response.getHeaders().add("expired", e.getMessage());
+            return response.setComplete();
         } catch(Exception e) {
             response.setStatusCode(HttpStatus.UNAUTHORIZED);
 

@@ -54,10 +54,25 @@ public class BookController {
 
         return ResponseEntity.ok(books);
     }
-
-    @GetMapping("/test")
-    public ResponseEntity<?> user() {
-        UserDTO user = userClient.getUser(3L, "");
-        return ResponseEntity.ok(user);
+    
+    @GetMapping("/{id}/details")
+    public ResponseEntity<?> getDetails(@PathVariable long id) {
+    	try {
+    		return ResponseEntity.ok(bookService.findById(id));
+    	} catch(Exception e) {
+    		return ResponseEntity.badRequest().body(e.getMessage());
+    	}
     }
+    
+    @PostMapping("/save")
+    public ResponseEntity<?> saveMultiple(@RequestBody List<Book> books) {
+    	try {
+    		books.forEach(book -> bookService.save(book));
+    		return ResponseEntity.ok().build();
+    	} catch(Exception e) {
+    		return ResponseEntity.badRequest().body(e.getMessage());
+    	}
+    }
+    
+
 }

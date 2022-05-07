@@ -34,6 +34,7 @@ public class Book {
     private String language;
     private String description;
     private String imageUrl;
+    private String url;
 
     private float rating;
     private long rateCount;

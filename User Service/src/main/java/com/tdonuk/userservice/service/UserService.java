@@ -51,6 +51,14 @@ public class UserService {
             return null;
         }
     }
+    
+    public UserEntity findByEmail(String email) {
+    	try {
+    		return userRepository.findByEmail(email).orElse(null);
+    	} catch(Exception e) {
+    		return null;
+    	}
+    }
 
     public UserEntity delete(UserEntity entity) throws Exception {
         if(userRepository.existsById(entity.getUserId())) {
