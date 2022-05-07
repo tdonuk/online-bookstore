@@ -9,45 +9,48 @@ export default class PageHeader extends React.Component {
         const userMenuContent = [
             {
                 text: "Profil",
-                href: "/profile",
+                action: () => window.location = "/profile",
                 key: "profile",
                 icon: <FaRegUserCircle className="mini-icon flex-center-align"/>
             },
             {
                 text: "Ayarlar",
-                href: "/settings",
+                action: () => window.location = "/settings",
                 key: "settings",
                 icon: <FaCogs className="mini-icon flex-center-align"/>
             },
             {
                 text: "Çıkış",
-                href: "/login?logout",
+                action: () => {
+                    localStorage.clear();
+                    window.location = "/login?logout"
+                },
                 key: "logout",
                 icon: <FaRegArrowAltCircleLeft className="mini-icon flex-center-align"/>
             },
             {
                 text: "Hakkında",
-                href: "/about",
+                action: () => window.location = "/about",
                 key: "about",
                 icon: <FaRegQuestionCircle className="mini-icon flex-center-align"/>
             }
         ];
 
         const contents = userMenuContent.map((obj) =>
-            <div key={obj.key} className="dropdown-option flex space-between" onClick={() => window.location=obj.href}>
+            <div key={obj.key} className="dropdown-option flex space-between" onClick={obj.action}>
                 <p href={obj.href} className="dropdown-option-text">{obj.text}</p>
                 {obj.icon}
             </div>
         );
 
         this.state = {
-            userMenuContent:  contents
+            userMenuContent:  contents,
+            user: JSON.parse(localStorage.getItem("user")),
         };
     }
 
     render() {
-        const user = JSON.parse(localStorage.getItem("user"));
-        const{userMenuContent} = this.state
+        const{userMenuContent, user} = this.state
 
         return(
             <div className="page-header flex space-between">

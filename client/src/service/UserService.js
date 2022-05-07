@@ -1,18 +1,9 @@
 import axios from 'axios'
-import {BehaviorSubject} from 'rxjs';
 
 const URL = "http://localhost:8765/api/user";
-const currentUser = new BehaviorSubject(JSON.parse(localStorage.getItem('currentUser')));
+let currentUser = null;
 
 class UserService {
-  get currentUserValue() {
-    return currentUser.value;
-  }
-
-  get currentUser() {
-    return currentUser.asObservable;
-  }
-
   login(user) {
     const headers = {
       "Content-Type": "application/json; charset=UTF-8"
@@ -27,13 +18,6 @@ class UserService {
     });
   }
 
-  logout() {
-    return axios.post(URL + "/logout", {}).then(response => {
-      localStorage.removeItem('currentUser');
-      currentUser.next(null);
-    });
-  }
-
   register(user) {
     const headers = {
       "Content-Type": "application/json; charset=UTF-8"
@@ -45,6 +29,26 @@ class UserService {
       headers: headers,
       withCredentials: false,
       data: JSON.stringify(user)
+    });
+  }
+
+  refreshToken() {
+    const headers = {
+      "Authorization": "Bearer " + localStorage.getItem("refresh-token"),
+    }
+
+    axios({
+      url: URL + "/token/refresh",
+      headers: headers,
+      method: "GET",
+      withCredentials: false 
+    }).then(response => {
+      console.log("updating access token..");
+      localStorage.setItem("access-token", response.data);
+    }).catch(err => {
+      if(err.response.headers["expired"]) {
+        localStorage.clear();
+      }
     });
   }
 

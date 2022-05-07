@@ -1,5 +1,5 @@
 import React from "react";
-import {FaWindowClose} from "react-icons/fa";
+import {FaTimes} from "react-icons/fa";
 
 export default class Error extends React.Component {
     constructor(props) {
@@ -7,7 +7,7 @@ export default class Error extends React.Component {
 
         this.state = {
             message: props.message,
-            icon: <FaWindowClose className="mini-icon icon-error flex-center-align"/>
+            icon: <FaTimes className="mini-icon icon-error flex-center-align"/>
         }
     }
 

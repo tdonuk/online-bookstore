@@ -1,78 +1,90 @@
 import React from "react";
 import '../../common/app.css';
 import './home_page.css';
-import {User} from "../../model/entity/User";
-import {Book} from "../../model/entity/Book";
 import PageHeader from "../fragment/PageHeader";
 import BookService from "../../service/BookService";
-import Info from "../fragment/Info";
-import {FaStarHalfAlt} from "react-icons/fa";
+import BookCard from "../fragment/BookCard";
+import LoadingScreen from "../modal/LoadingScreen";
+import ModalMessage from "../modal/ModalMessage";
+import UserService from "../../service/UserService";
+import LoginPage from "../auth/login_page";
+import BookShelf from "../fragment/BookShelf";
 
 export default class HomePage extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            accessToken: localStorage.getItem("access-token"),
-            refreshToken: localStorage.getItem("refresh-token"),
             loading: true,
+            errorMessage: null,
+            user: JSON.parse(localStorage.getItem("user")),
         }
+
+        this.loadData = this.loadData.bind(this);
     }
 
     componentDidMount() {
-        this.setState({loading: true});
+        const{user} = this.state;
 
+        if(user) {
+            this.setState({loading: true});
+
+            this.loadData();
+        } else {
+            this.setState({
+                loading: false,
+            });
+        }
+    }
+
+    loadData() {
         BookService.getBookList().then(response => {
-            console.log(response.data);
             this.setState({
                 bookList: response.data,
                 loading: false,
             });
-        }).catch(err => {
-            console.log(err);
-        });
+        })
+    } 
 
-    }
 
     render() {
-        const{bookList, loading} = this.state;
-        let list;
-        if(bookList) {
-            console.log("booklist vra: "+JSON.stringify(bookList));
-            list = bookList.map((book) => 
-            <div className="item-box" onClick={function(){window.location = book.url}}>
-                <div className="item-header primary">
-                    <div className="flex space-between">
-                        <div className="item-title flex-center-align flex">
-                            <FaStarHalfAlt className="flex-center-align" style={{margin: '0 2px', color: "goldenrod", fontSize:'20px'}}/>
-                            <p className="flex-center-align">{book.rating} ({book.rateCount})</p>
-                        </div>
-                        <p className="flex-center-align">{book.price}₺</p>
+        const{bookList, loading, errorMessage, user} = this.state;
+
+        if(!user) {
+            return(
+                <div>
+                    {loading &&
+                    <div className="big-alert">
+                        <LoadingScreen/>
                     </div>
+                    }
+                    <LoginPage redirect="/"/>
+                    { errorMessage &&
+                    <ModalMessage message={errorMessage} subtitle={"Bir hata oluştu"} id="errorModal" type="error" title="Hata"/>
+                    }
                 </div>
-                <img className="book-img flex-center-align" src={book.imageUrl}/>
-                <div className="item-box-body">
-                    <p className="item-title flex-center-align">{book.title}</p>
-                </div>
-            </div>
             );
         }
 
         return (
             <div className="container secondary-background">
                 {<PageHeader/>}
+                { errorMessage &&
+                    <ModalMessage message={errorMessage} subtitle={"Bir hata oluştu"} id="errorModal" type="error" title="Hata"/>
+                }
+
                 <div className="page-body">
-                <h1 className="big-title left-align primary">Son eklenenler</h1>
                 { loading &&
                     <div className="big-alert">
-                        <Info message="Loading..."/>
+                        <LoadingScreen/>
                     </div>
                 }
-                { bookList &&
-                    <div>
-                        {list}
-                    </div>
+                <section>
+                <h1 className="small-title left-align flex-center-align">Son eklenenler</h1>
+                { bookList && 
+                <BookShelf bookList={bookList}/>
                 }
+                </section>
                 </div>
                 <div className="page-footer">
 

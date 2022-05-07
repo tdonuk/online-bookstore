@@ -67,6 +67,13 @@ body {
     cursor: pointer;
 }
 
+.small-title {
+    padding: 10px;
+    margin: 10px;
+    font-size: 2rem;
+    color: brown;
+}
+
 .primary {
     color: cornflowerblue;
 }
@@ -165,6 +172,16 @@ input {
     align-items: center;
     padding: 0;
     margin: 0;
+}
+
+.modal-body {
+    padding: 8px;
+    min-width: 400px;
+}
+
+.modal-message {
+    padding: 10px 0;
+    width: 100%;
 }
 
 .modal-title {
@@ -298,6 +315,10 @@ input {
     margin: 0;
 }
 
+.marign-auto {
+    margin: auto;
+}
+
 .no-padding {
     padding: 0;
 }
@@ -318,4 +339,39 @@ input {
 
 .icon-warn {
     color: #c78d05;
+}
+
+@keyframes spin {
+    from{
+        transform: rotate(360deg);
+    }
+    to {
+        transform: rotate(0deg);
+    }
+}
+
+@keyframes scale {
+    0%{
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.050);
+    }
+    75% {
+        transform: scale(0.950);
+    }
+}
+
+.loading-spin {
+    animation-name: spin;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+.loading-scale {
+    animation-name: scale;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
 }

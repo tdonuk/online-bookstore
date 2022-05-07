@@ -3,9 +3,9 @@ import UserService from "../../service/UserService";
 import {User} from '../../model/entity/User';
 import '../../common/app.css';
 import './form_page.css';
-import ModalMessage from "../modal/modal_message";
 import Info from "../fragment/Info";
 import Error from "../fragment/Error";
+import LoadingScreen from '../modal/LoadingScreen';
 
 export default class LoginPage extends React.Component {
     constructor(props) {
@@ -19,7 +19,8 @@ export default class LoginPage extends React.Component {
             user: new User(),
             submitted: false,
             loading: false,
-            errorMessage: null
+            errorMessage: null,
+            redirect: this.props.redirect,
         };
     }
 
@@ -45,15 +46,18 @@ export default class LoginPage extends React.Component {
 
         UserService.login(user).then(response => {
             localStorage.setItem("access-token", response.headers["access_token"]);
-            localStorage.setItem("refresh-token", response.headers["access_token"]);
-            localStorage.setItem("user", JSON.stringify(response.data));
+            localStorage.setItem("refresh-token", response.headers["refresh_token"]);
 
             user = response.data;
 
-            console.info("Giriş başarılı: "+user.name.firstname + " " + user.name.lastname + "\nYetki: "+user.role);
+            user.password = "[Protected]";
+
+            localStorage.setItem("user", JSON.stringify(user));
 
             this.setState({errorMessage: null, loading: false});
-            window.location = "/home";
+
+            window.location = this.state.redirect;
+
         }).catch(error => {
             this.setState({
                 errorMessage: error.response.data,
@@ -68,6 +72,9 @@ export default class LoginPage extends React.Component {
 
         return(
             <div className="container primary-background flex">
+                {loading &&
+                <LoadingScreen/>
+                }
                 <div className="form-container flex-center-align">
                     <div className="form center-form">
                         <h1 className="big-title primary"><strong>Giriş</strong></h1>
