@@ -3,10 +3,12 @@ package com.tdonuk.bookservice.controller;
 import com.tdonuk.bookservice.comm.UserClient;
 import com.tdonuk.bookservice.model.Author;
 import com.tdonuk.bookservice.model.Name;
-import com.tdonuk.bookservice.model.UserDTO;
 import com.tdonuk.bookservice.model.entity.Book;
 import com.tdonuk.bookservice.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,10 +18,10 @@ import java.util.List;
 @RequestMapping("/api/book/")
 public class BookController {
     @Autowired
-    BookService bookService;
+    private BookService bookService;
 
     @Autowired
-    UserClient userClient;
+    private UserClient userClient;
 
     @PutMapping("/save")
     public ResponseEntity<?> save(@RequestBody Book book) {
@@ -43,9 +45,10 @@ public class BookController {
         return ResponseEntity.badRequest().build();
     }
 
-    @GetMapping("/last")
+    @GetMapping("/public/last")
     public ResponseEntity<?> books() {
-        return ResponseEntity.ok(bookService.findAll());
+    	Pageable page = PageRequest.of(0, 10, Sort.by("lastSeenInSearch").descending());
+        return ResponseEntity.ok(bookService.findLast(page));
     }
 
     @GetMapping("/find")
@@ -55,7 +58,7 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
     
-    @GetMapping("/{id}/details")
+    @GetMapping("public/{id}/details")
     public ResponseEntity<?> getDetails(@PathVariable long id) {
     	try {
     		return ResponseEntity.ok(bookService.findById(id));
@@ -64,11 +67,10 @@ public class BookController {
     	}
     }
     
-    @PostMapping("/save")
+    @PutMapping("save/multiple")
     public ResponseEntity<?> saveMultiple(@RequestBody List<Book> books) {
     	try {
-    		books.forEach(book -> bookService.save(book));
-    		return ResponseEntity.ok().build();
+    		return ResponseEntity.ok(bookService.saveMultiple(books));
     	} catch(Exception e) {
     		return ResponseEntity.badRequest().body(e.getMessage());
     	}

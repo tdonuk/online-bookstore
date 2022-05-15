@@ -24,23 +24,16 @@ export default class HomePage extends React.Component {
     }
 
     componentDidMount() {
-        const{user} = this.state;
+        this.setState({loading: true});
 
-        if(user) {
-            this.setState({loading: true});
-
-            this.loadData();
-        } else {
-            this.setState({
-                loading: false,
-            });
-        }
+        this.loadData();
     }
 
     loadData() {
         BookService.getBookList().then(response => {
+            console.log(response.data);
             this.setState({
-                bookList: response.data,
+                bookList: response.data.content,
                 loading: false,
             });
         })
@@ -48,27 +41,16 @@ export default class HomePage extends React.Component {
 
 
     render() {
-        const{bookList, loading, errorMessage, user} = this.state;
+        const{bookList, loading, errorMessage} = this.state;
 
-        if(!user) {
-            return(
-                <div>
-                    {loading &&
-                    <div className="big-alert">
-                        <LoadingScreen/>
-                    </div>
-                    }
-                    <LoginPage redirect="/"/>
-                    { errorMessage &&
-                    <ModalMessage message={errorMessage} subtitle={"Bir hata oluştu"} id="errorModal" type="error" title="Hata"/>
-                    }
-                </div>
-            );
-        }
+        const books = () => bookList.map((book) =>
+            <BookCard key={book.isbn} book={book} compare={false}></BookCard>
+        );
 
         return (
             <div className="container secondary-background">
                 {<PageHeader/>}
+
                 { errorMessage &&
                     <ModalMessage message={errorMessage} subtitle={"Bir hata oluştu"} id="errorModal" type="error" title="Hata"/>
                 }
@@ -80,9 +62,15 @@ export default class HomePage extends React.Component {
                     </div>
                 }
                 <section>
-                <h1 className="small-title left-align flex-center-align">Son eklenenler</h1>
                 { bookList && 
-                <BookShelf bookList={bookList}/>
+                <div className="book-shelf-container">
+                    <div>
+                        <h1 className="shelf-title left-align flex-center-align">Son arananlar</h1>
+                    </div>
+                    <div className="horizontal-shelf">
+                        {books()}
+                    </div>
+                </div>
                 }
                 </section>
                 </div>

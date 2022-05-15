@@ -8,6 +8,7 @@ class BookShelf extends React.Component {
     this.state = {
       loading: true,
       bookList: this.props.bookList,
+      compare: this.props.compare,
     };
   }
 
@@ -19,15 +20,15 @@ class BookShelf extends React.Component {
   }
 
   render() {
-    const{bookList} = this.state;
+    const{bookList, compare} = this.state;
 
     let list;
     list = bookList.map((book) =>
-      <BookCard key={book.id} book={book}></BookCard>
+      <BookCard key={book.isbn} book={book} compare={compare}></BookCard>
     );
     return(
-      <div className='card-container flex'>
-          {list}
+      <div>
+        {list}
       </div>
     );
 

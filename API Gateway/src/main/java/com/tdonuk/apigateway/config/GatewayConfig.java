@@ -24,6 +24,11 @@ public class GatewayConfig {
                         .filters(f -> f.filter(filter))
                         .uri("lb://BOOK-SERVICE/")
                 )
+                
+                .route("SEARCH-SERVICE", r -> r.path("/api/search/**")
+                		.filters(f -> f.filter(filter))
+                		.uri("lb://SCRAPER-SERVICE"))
+                
                 .build();
     }
 }

@@ -1,7 +1,6 @@
 html {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
 
     font-family: Tahoma;
 
@@ -19,9 +18,30 @@ body {
     margin: 0;
     padding: 0;
 
+    width: 100%;
+    height: 100%;
+
     box-sizing: border-box;
 
     font-family: Tahoma;
+}
+
+.page-header {
+    background-color: #d7b60e;
+    border-bottom: 1px solid black;
+}
+
+#searchBar {
+    padding: 5px 5px;
+}
+
+.search {
+    padding: inherit;
+}
+
+.page-title {
+    font-size: 2rem;
+    padding: 0 10px;
 }
 
 .container {
@@ -62,7 +82,7 @@ body {
 .big-title {
     padding: 20px;
     margin: 0;
-    font-size: 3.2rem;
+    font-size: 2.5rem;
     text-align: center;
     cursor: pointer;
 }
@@ -71,15 +91,20 @@ body {
     padding: 10px;
     margin: 10px;
     font-size: 2rem;
-    color: brown;
+    color: #2b2b2b;
+    border-bottom: 1px solid gray;
+}
+
+.center-align {
+    text-align: center;
 }
 
 .primary {
-    color: cornflowerblue;
+    color: #3676ad;
 }
 
 .secondary {
-    color: antiquewhite;
+    color: cornsilk;
 }
 
 .primary-background {
@@ -119,7 +144,7 @@ input {
 }
 
 .standart-button {
-    padding: 12px;
+    padding: inherit;
 
     font-size: 1rem;
 
@@ -141,6 +166,10 @@ input {
 .standard-link {
     font-size: 1rem;
     text-align: center;
+}
+
+.link {
+    cursor: pointer;
 }
 
 .modal-background {
@@ -235,6 +264,7 @@ input {
 .dropdown {
     padding: 10px;
     position: relative;
+    z-index: 2;
 }
 
 .dropdown-content-container {
@@ -308,7 +338,10 @@ input {
 
 .flex-center-align {
     align-self: center;
-    alignment: center;
+}
+
+.flex-end-align {
+    align-self: flex-end;
 }
 
 .no-margin {
@@ -374,4 +407,145 @@ input {
     animation-duration: 3s;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
+}
+
+.scrollable {
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.strong-nav {
+    font-size: 0.9rem;
+}
+
+.strong-nav .nav-item {
+    padding: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    margin-left: 2px;
+    background-color: #2b2b2b;
+}
+
+.book-shelf-container {
+    padding: 10px;
+    text-align: center;
+
+    display: flexbox;
+
+    overflow: auto;
+}
+
+.horizontal-shelf {
+    overflow-x: auto;
+    max-height: 40vh;
+    display: flex;
+}
+
+.shelf-title {
+    font-size: 2rem;
+    text-align: center;
+    color: dimgrey;
+    font-weight: bold;
+    margin: 0;
+    padding: 10px;
+    width: fit-content;
+}
+
+.item-box {
+    display: inline-flex;
+    flex-direction: column;
+
+    width: fit-content;
+
+    border-radius: 10px;
+
+    transition: 0.4s;
+
+    margin: 10px;
+
+    width: 180px;
+    height: 300px;
+
+    color: darkslategrey;
+}
+
+.item-header {
+    display: inline-flex;
+    justify-content: space-between;
+
+    color: inherit;
+}
+
+.item-rating {
+    display: flex;
+    color: inherit;
+}
+
+.image-container {
+    color: inherit;
+}
+
+.book-img {
+    height: 100%;
+    border: 1px solid gray;
+    border-radius: inherit;
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.book-img:hover {
+    transform: scale(1.02) rotateX(1deg) rotateY(-1deg);
+    box-shadow: gray 2px 2px 6px 2px;
+}
+
+.item-footer {
+    text-align: center;
+    border-radius: inherit;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    color: inherit;
+}
+
+.item-title {
+    font-weight: bold;
+}
+
+.item-price {
+    color: blue;
+    font-size: 1.1rem;
+}
+
+.item-sub-info {
+    background-color: #63a6e073;
+
+    padding: 7px;
+    margin: 5px;
+
+    font-weight: bold;
+    font-size: 0.8rem;
+
+    border-radius: inherit;
+
+    width: fit-content;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+
+    border: 1px solid gray;
+}
+
+.item-sub-info:hover {
+   border: 1px solid black;
+}
+
+.search-info {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-bottom: 1px solid gray;
 }

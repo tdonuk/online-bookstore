@@ -9,6 +9,7 @@ class BookCard extends React.Component {
 
     this.state = {
       book: new Book(),
+      compare: this.props.compare,
     };
 
   }
@@ -21,29 +22,32 @@ class BookCard extends React.Component {
   }
 
   render() {
-    const{book, action} = this.state;
+    const{book, compare} = this.state;
 
     return(
       <div className="item-box">
         <div className="item-header">
-          <div className="flex space-between">
-              <div className="item-title flex-center-align flex">
-                    <FaStarHalfAlt className="flex-center-align" style={{margin: '0 2px', color: "goldenrod", fontSize:'20px'}}/>
-                    <p className="flex-center-align">{book.rating} ({book.rateCount})</p>
-              </div>
-              <p className="flex-center-align">{book.price} ₺</p>
+          <div className="item-rating">
+            <FaStarHalfAlt className="flex-center-align" style={{margin: '0 2px', color: "goldenrod", fontSize:'20px'}}/>
+            <p className="flex-center-align">{book.rating} {book.rateCount !== 0 && book.rateCount}</p>
           </div>
+          <p className="flex-center-align">{new Date(book.publishDate).toLocaleDateString()}</p>
         </div>
-        <div className="item-body">
-            <div className="image-container flex">
-              <img className="book-img flex-center-align" alt='image not found' src={book.imageUrl}/>
-            </div>
-        </div>
+        
+        <img className="book-img" onClick={() => window.location = "/book/details?id="+book.id} alt='Görüntü bulunamadı' src={book.imageUrl}/>
+
         <div className="item-footer">
           <p className="item-title flex-center-align">{book.title}</p>
+          <p className="flex-center-align item-price">{book.price} ₺</p>
+          { (!compare) &&
+            <p className="center-align item-sub-info" onClick={() => window.location = book.url}>{book.source}</p>
+          }
+          { compare && book.lowestPrice &&
+          <p className="center-align item-sub-info">En uygun</p>
+          }
         </div>
       </div>
-    );
+      );
   }
 }
 

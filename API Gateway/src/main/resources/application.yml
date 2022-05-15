@@ -15,6 +15,10 @@ spring:
           uri: lb://BOOK-SERVICE/
           predicates:
             - Path=/api/book/**
+        - id: SCRAPER-SERVICE
+          uri: lb://SCRAPER-SERVICE/
+          predicates: 
+            - Path=/api/search/**
       discovery:
         locator:
           enabled: true

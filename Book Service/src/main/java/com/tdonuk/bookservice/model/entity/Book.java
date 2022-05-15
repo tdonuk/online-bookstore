@@ -1,6 +1,8 @@
 package com.tdonuk.bookservice.model.entity;
 
 import com.tdonuk.bookservice.model.Author;
+import com.tdonuk.bookservice.model.BookSource;
+
 import lombok.Data;
 import org.hibernate.annotations.Fetch;
 
@@ -41,4 +43,11 @@ public class Book {
 
     private Date publishDate;
     private Date creationDate;
+    
+    @Enumerated(EnumType.STRING)
+    private BookSource source;
+    
+    private boolean isLowestPrice;
+    
+    private Date lastSeenInSearch;
 }

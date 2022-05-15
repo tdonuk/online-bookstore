@@ -5,6 +5,9 @@ export class Book {
   inDiscount;
   url;
   
+  lastSeenInSearch;
+  lowestPrice;
+  source;
   imageUrl;
   description;
   price;

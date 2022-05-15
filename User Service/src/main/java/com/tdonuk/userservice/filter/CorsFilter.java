@@ -18,7 +18,7 @@ public class CorsFilter implements Filter {
         resp.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
         resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         resp.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
-        resp.setHeader("Access-Control-Expose-Headers", "*");
+        resp.setHeader("Access-Control-Expose-Headers", "access_token, refresh_token, expired");
         resp.setHeader("Access-Control-Max-Age", "3600");
 
         if("OPTIONS".equalsIgnoreCase(((HttpServletRequest) request).getMethod())) {
