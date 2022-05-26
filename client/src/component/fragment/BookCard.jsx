@@ -1,14 +1,13 @@
 import React from 'react';
 import {FaStarHalfAlt} from 'react-icons/fa';
-import {Book} from '../../model/entity/Book';
-import BookService from '../../service/BookService';
+import {BookCardEntity} from '../../model/entity/BookCardEntity';
 
 class BookCard extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      book: new Book(),
+      book: new BookCardEntity(),
       compare: this.props.compare,
     };
 
@@ -27,23 +26,21 @@ class BookCard extends React.Component {
     return(
       <div className="item-box">
         <div className="item-header">
-          <div className="item-rating">
-            <FaStarHalfAlt className="flex-center-align" style={{margin: '0 2px', color: "goldenrod", fontSize:'20px'}}/>
-            <p className="flex-center-align">{book.rating} {book.rateCount !== 0 && book.rateCount}</p>
-          </div>
-          <p className="flex-center-align">{new Date(book.publishDate).toLocaleDateString()}</p>
+        { compare && book.lowestPrice &&
+          <p className="center-align item-sub-info">En uygun</p>
+        }
         </div>
         
-        <img className="book-img" onClick={() => window.location = "/book/details?id="+book.id} alt='Görüntü bulunamadı' src={book.imageUrl}/>
+        <a href={book.url}>
+          <img className="book-img" alt='Görüntü bulunamadı' src={book.imgUrl}/>
+        </a>
 
         <div className="item-footer">
           <p className="item-title flex-center-align">{book.title}</p>
+          <p className="item-author flex-center-align">{book.authors}</p>
           <p className="flex-center-align item-price">{book.price} ₺</p>
           { (!compare) &&
             <p className="center-align item-sub-info" onClick={() => window.location = book.url}>{book.source}</p>
-          }
-          { compare && book.lowestPrice &&
-          <p className="center-align item-sub-info">En uygun</p>
           }
         </div>
       </div>

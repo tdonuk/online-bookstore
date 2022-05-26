@@ -29,28 +29,18 @@ public class ScraperController {
 	@Autowired
 	private BookServiceClient bookService;
 	
-	private LocalDateTime lastRequestDate;
-	
-	private ResultWrapper lastResult = null;
-	
 	
 	@GetMapping("")
 	public ResponseEntity<?> search(@RequestParam String key, HttpServletRequest request) {
 		try {
 			ResultWrapper result = scraperService.searchDefault(key);
 			
-			String authorization = request.getHeader("Authorization");
-			
-			for(SearchResult resultSet : result.getResultSet()) {
-				resultSet.setResult(bookService.saveBooks(resultSet.getResult(), authorization));
-			}
-			
-			lastResult = result;
-			
 			return ResponseEntity.ok(result);
 		} catch(Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.badRequest().body("Servis geçici olarak kullanılamamaktadır. Lütfen daha sonra tekrar deneyiniz.");
 		}
 
 	}
+	
 }

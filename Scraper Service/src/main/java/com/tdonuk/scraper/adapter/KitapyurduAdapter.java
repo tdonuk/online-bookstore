@@ -1,5 +1,6 @@
 package com.tdonuk.scraper.adapter;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +17,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.tdonuk.scraper.model.Author;
+import com.tdonuk.scraper.model.BookCard;
 import com.tdonuk.scraper.model.BookSource;
 import com.tdonuk.scraper.model.Name;
 import com.tdonuk.scraper.model.entity.Book;
@@ -27,62 +30,7 @@ public class KitapyurduAdapter extends ScraperAdapter{
 	public static final String BASE_URL = "https://www.kitapyurdu.com";
 	public static final String SEARCH_PATH = "/index.php?route=product/search&filter_name=";
 	
-	
-	
-	private static Random random = new Random();
-	
-	public KitapyurduAdapter(Document currentDocument) {
-		super(currentDocument);
-	}
-	
-
-	public KitapyurduAdapter() {
-
-	}
-
-
-	@Override
-	public List<Book> parse(Set<String> urls) throws Exception {
-		List<Book> books = new ArrayList<>();
-		Book book;
-		System.out.println("Scraping "+getSource().text()+ " for " + urls.size() + " products.");
-		int index = 0;
-		for(String url : urls) {
-			index++;
-			
-			if(!url.startsWith(BASE_URL+"/kitap")) { // it's not a book
-				System.out.println("Skipping ["+url+"] for wrong product");
-				continue;
-			}
-			
-			try {
-				System.out.println("Parsing: " + url);
-				System.out.println("user agent: " + userAgent());
-				setCurrentPage(Jsoup.connect(url).userAgent(userAgent()).get());
-
-				book = parseDefault();
-				book.setSource(getSource());
-				
-				books.add(book);
-				
-				if(books.size() > 5) {
-					System.out.println("reached maximum result size. completing the process..");
-					break;
-				};
-				
-				System.out.println("status: " + (index) + "/"+urls.size());
-				
-				Thread.sleep(random().nextInt(100));
-			} catch(Exception e) {
-				System.err.println("HATA: " + e.getMessage());
-				continue;
-			}
-
-		}
-		
-		return books;
-	}
-	
+	protected static Random random = new Random();
 
 	@Override
 	public void parseTitle(Book book) throws Exception {
@@ -94,6 +42,8 @@ public class KitapyurduAdapter extends ScraperAdapter{
 	@Override
 	public void parseIsbn(Book book) throws Exception {
 		String isbn = getCurrentPage().select("div.attributes table tbody tr:contains(ISBN) td:eq(1)").text();
+		
+		if("".equals(isbn) || null == isbn || isbn.length() < 7) throw new Exception("Not able to parse isbn");
 		
 		book.setIsbn(isbn);
 	}
@@ -107,11 +57,16 @@ public class KitapyurduAdapter extends ScraperAdapter{
 
 	@Override
 	public void parsePrice(Book book) throws Exception {
-		String price = getCurrentPage().selectFirst("div.price__item").text();
+		Element priceEl = getCurrentPage().selectFirst("div[class='pr_price__content pr_sell-price']");
 		
-		price = price.replaceAll("[.]", "").replaceAll(",", ".").replaceAll("[^0-9.]", "");
-		
-		book.setPrice(Double.valueOf(price));
+		if(priceEl != null) {
+			String price = priceEl.text();
+			
+			price = price.replaceAll("[.]", "").replaceAll(",", ".").replaceAll("[^0-9.]", "");
+			
+			book.setPrice(Double.valueOf(price));
+		}
+		else throw new Exception("Not able to parse price");
 	}
 
 	@Override
@@ -212,53 +167,88 @@ public class KitapyurduAdapter extends ScraperAdapter{
 		book.setAuthors(authors);
 	}
 
-	@Override
-	public Set<String> search(String key) throws Exception{
-		String url = BASE_URL + SEARCH_PATH + key;
-		
-		Document doc = Jsoup.connect(url).get();
-		if(doc != null) {
-			System.out.println("Doc is parsed");
-			
-			long pages = doc.select("div.pagination div.links *").stream().filter(e -> NumericUtils.isInteger(e.text())).count();
-			
-			int currentPage = 1;
-			List<String> urls = new ArrayList<>();
-			do {
-				int i = random.nextInt(200);
-				System.out.println("Waiting for "+((double) i/1000)+" seconds...");
-				Thread.sleep(i);
-				
-				doc = Jsoup.connect(url + "&page="+currentPage).get();
-				
-				Elements elements = doc.select("div[id='product-table'] div.product-cr div.name a");
-				
-				elements.eachAttr("href").stream().forEach(u -> {
-					if(!u.startsWith(BASE_URL)) {
-						u.replace(u, BASE_URL+"/"+u);
-					}
-				});
-				
-				urls.addAll(elements.eachAttr("href"));
-				
-				currentPage++;
-			}
-			while(currentPage <= pages);
-			
-			System.out.println("Found elements: " + urls.size() + " ("+ pages +" pages)");
-			
-			return urls.stream().collect(Collectors.toUnmodifiableSet());
-		} else {
-			System.out.println("Doc is not parsed");
-		}
-		
-		return Set.of();
-	}
-
 
 	@Override
 	public BookSource getSource() {
 		return BookSource.KITAPYURDU;
+	}
+
+
+	@Override
+	protected String baseUrl() {
+		return BASE_URL;
+	}
+
+
+	@Override
+	protected String searchPath(String key) {
+		return BASE_URL + SEARCH_PATH + key;
+	}
+
+
+	@Override
+	protected boolean isValid(String url) {
+		return url.startsWith(BASE_URL + "/kitap");
+	}
+	
+	@Override
+	protected Elements selectPagination(Document doc) {
+		Elements elements = doc.select("div.pagination div.links *");
+		
+		return elements;
+	}
+	
+	@Override
+	protected Set<BookCard> selectProducts(Document doc) {
+		Elements elements = doc.select("div[id='product-table'] div.product-cr");
+		
+		Set<BookCard> items = new HashSet<>();
+		
+		BookCard card;
+		for(Element el : elements) {
+			card = new BookCard();
+			
+			card.setSource(getSource());
+			
+			String title = el.select("div.name a").attr("title");
+			String url = el.select("div.name a").attr("href");
+			String imgUrl = el.select("div.cover a img").attr("src");
+			String price = el.selectFirst("div.price:contains(Kitapyurdu Fiyatı) span.value").text().replaceAll("[^0-9,]", "").replaceAll(",", ".");
+			
+			if(!url.startsWith(BASE_URL)) url = BASE_URL + (url.startsWith("/") ? url : "/" + url);
+			
+			if(!url.startsWith(BASE_URL + "/kitap")) continue;
+			
+			card.setTitle(title);
+			card.setUrl(url);
+			card.setImgUrl(imgUrl);
+			
+			try {
+				card.setPrice(Double.valueOf(price));	
+			} catch(Exception e) {
+				err(e.getMessage() + " [price: "+price+"]");
+				
+				continue;
+			}
+			
+			items.add(card);
+		}
+		
+		return items;
+	}
+	
+	@Override
+	protected Document getPage(String key, int num) throws IOException {
+		Document doc = Jsoup.connect(searchPath(key) + "&page="+num).get();
+		
+		return doc;
+	}
+
+
+	@Override
+	protected Book handleJson(JsonNode node) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

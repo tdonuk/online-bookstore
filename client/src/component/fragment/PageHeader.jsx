@@ -64,7 +64,7 @@ export default class PageHeader extends React.Component {
                 <h2 onClick={() => window.location="/"} className="page-title secondary">Bookstore</h2>
                 <div className="flex flex-center-align space-between">
                     <form className="flex" id="searchBar" action="/search">
-                        <input maxLength={20} minLength={2} placeholder="Kitap ismi.." className="flex-center-align search" type="text" name="key" id="search"/>
+                        <input maxLength={60} minLength={2} placeholder="Kitap ismi.." className="flex-center-align search" type="text" name="key" id="search"/>
                         <button type="submit" className="standart-button width-fit-content flex-center-align no-margin">Ara</button>
                     </form>
                 </div>

@@ -2,6 +2,7 @@ package com.tdonuk.scraper.model;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.tdonuk.scraper.model.entity.Book;
 
@@ -10,18 +11,14 @@ import lombok.Data;
 
 @Data
 public class SearchResult {
-	private String source;
-	private List<Book> result;
+	private BookSource source;
+	private Set<BookCard> result;
 	double averagePrice;
 	double highestPrice;
 	double lowestPrice;
 	
-	public SearchResult(String source, List<Book> result) {
+	public SearchResult(BookSource source, Set<BookCard> result) {
 		this.source = source;
 		this.result = result;
-		
-		lowestPrice = result.stream().mapToDouble(book -> book.getPrice()).min().getAsDouble();
-		highestPrice = result.stream().mapToDouble(book -> book.getPrice()).max().getAsDouble();
-		averagePrice = result.stream().mapToDouble(book -> book.getPrice()).average().getAsDouble();
 	}
 }

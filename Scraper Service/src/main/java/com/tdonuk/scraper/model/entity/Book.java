@@ -31,12 +31,13 @@ public class Book {
 
     private int pageCount;
 
+    @Column(columnDefinition = "text")
+    private String description;
+    
     private String title;
     
-    @Column(unique = true)
     private String isbn;
     private String language;
-    private String description;
     private String imageUrl;
     private String url;
 

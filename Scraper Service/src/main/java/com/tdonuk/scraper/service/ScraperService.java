@@ -21,78 +21,83 @@ import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
 
 import com.tdonuk.scraper.adapter.BookScraper;
+import com.tdonuk.scraper.adapter.DRAdapter;
+import com.tdonuk.scraper.adapter.IdefixAdapter;
 import com.tdonuk.scraper.adapter.KitapyurduAdapter;
 import com.tdonuk.scraper.adapter.ScraperAdapter;
+import com.tdonuk.scraper.model.BookCard;
+import com.tdonuk.scraper.model.BookSource;
 import com.tdonuk.scraper.model.ResultWrapper;
 import com.tdonuk.scraper.model.SearchResult;
 import com.tdonuk.scraper.model.entity.*;
 
 @Service
 public class ScraperService {
+	
 	// when a new adapter is created, just add it here to get it working, no need to anything else.
 	private List<ScraperAdapter> adapters = List.of(
-			new KitapyurduAdapter()
-			);
+			new DRAdapter(), new IdefixAdapter()
+		);
 	
 	private Random random = new Random();
 	
-	
 	// searches the given keyword through pre-determined websites
 	public ResultWrapper searchDefault(final String key) throws Exception {
-		Map<ScraperAdapter , Set<String>> productUrls = new HashMap<>();
+		Map<ScraperAdapter , Set<BookCard>> results = new HashMap<>();
 		
-		ExecutorService ws = Executors.newFixedThreadPool(adapters.size());
+		ExecutorService es = Executors.newFixedThreadPool(adapters.size());
 		
 		for(ScraperAdapter adapter : adapters) {
 			if(adapter != null) {
-				ws.submit(new Runnable() {
+				es.submit(new Runnable() {
 					public void run() {
 						try {
-							productUrls.put(adapter, adapter.search(key));
+							results.put(adapter, adapter.search(key));
 						} catch (Exception e) {
-							System.out.println("Error");
+							System.out.println("Error while searching");
 						}
 					}
 				});
 			}
 		}
-		ws.shutdown();
-		ws.awaitTermination(10, TimeUnit.SECONDS);
-		
-		Map<String, Future<List<Book>>> futureList = new HashMap<>();
-		
-		ws = Executors.newFixedThreadPool(productUrls.size());
-		
-		for(Entry<ScraperAdapter, Set<String>> entry : productUrls.entrySet()) {
-			Future<List<Book>> future = ws.submit(new Callable<List<Book>>() {
-
-				@Override
-				public List<Book> call() throws Exception {
-					return entry.getKey().parse(entry.getValue());
-				}
-				
-			});
-			
-			futureList.put(entry.getKey().getSource().text(), future);
-		}
-		
-		ws.shutdown();
-		ws.awaitTermination(20, TimeUnit.SECONDS);
+		es.shutdown();
+		es.awaitTermination(10, TimeUnit.SECONDS);
 		
 		List<SearchResult> result = new ArrayList<>();
 		
-		for(Entry<String, Future<List<Book>>> future : futureList.entrySet()) {
-			if(future.getValue().isDone()) {
-				if(future.getValue().get() != null) {
-					result.add(new SearchResult(future.getKey(), future.getValue().get()));
-				}
+		for(Entry<ScraperAdapter, Set<BookCard>> searchResult : results.entrySet()) {
+			try {
+				result.add(new SearchResult(searchResult.getKey().getSource(), searchResult.getValue()));
+			} catch(Exception e) {
+				System.err.println(e.getMessage());
+				continue;
 			}
 		}
 		
-		ResultWrapper wrapper = new ResultWrapper(result);
-
-		return wrapper;
+		return new ResultWrapper(result);
+	}
+	
+	public Set<Book> parseBooks(Set<BookCard> products) throws Exception{		
+		Set<Book> books = new HashSet<Book>();
 		
+		ExecutorService es = Executors.newFixedThreadPool(products.stream().map(card -> card.getSource().name()).collect(Collectors.toSet()).size());
+		
+		for(BookCard card : products) {
+			es.submit(() -> {
+				try {
+					BookSource source = Enum.valueOf(BookSource.class, card.getSource().name());
+					
+					books.addAll(source.adapter().parse(products.stream().filter(b -> b.getSource() == source).map(b -> b.getUrl()).collect(Collectors.toSet())));
+				} catch(Exception e) {
+					System.err.println("Error while parsing: " + e.getMessage());
+				}
+
+			});
+		}
+		es.shutdown();
+		es.awaitTermination(10, TimeUnit.SECONDS);
+		
+		return books;
 	}
 	
 }

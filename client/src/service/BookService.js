@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const URL = "http://localhost:8765/api/book";
+const URL = "http://192.168.1.26:8765/api/book";
 
 class BookService {
 

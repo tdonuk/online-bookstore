@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.collect.Sets;
 import com.tdonuk.scraper.model.entity.Book;
 
 import lombok.Data;
@@ -18,7 +19,7 @@ public class ResultWrapper {
 	private List<SearchResult> resultSet;
 	
 	@JsonIgnore
-	private List<Book> common; // 
+	private Set<BookCard> common; 
 	
 	public ResultWrapper(List<SearchResult> resultSet) {
 		this.resultSet = resultSet;
@@ -27,19 +28,35 @@ public class ResultWrapper {
 	}
 	
 	private void  process() {
-		common = new ArrayList<>();
+		common = new HashSet<>();
 		
-		for(SearchResult result : resultSet) {
+		for(SearchResult result : resultSet) { // add all results to one list
 			common.addAll(result.getResult());
 		}
 		
-		for(Book book : common) {
-			List<Book> alternatives = common.stream().filter(b -> b.getIsbn().equals(book.getIsbn())).collect(Collectors.toList());
+		for(SearchResult result : resultSet) { // edit this list to contain only the common elements
+			common.retainAll(result.getResult());
+		}
+		
+		for(SearchResult result : resultSet) { // edit resultsets to remove uncommon elements
+			result.getResult().retainAll(common);
+		}
+		
+		for(SearchResult result : resultSet) {
+			result.setLowestPrice(result.getResult().stream().mapToDouble(book -> book.getPrice()).min().orElse(0));
+			result.setAveragePrice(result.getResult().stream().mapToDouble(book -> book.getPrice()).average().orElse(0));
+			result.setHighestPrice(result.getResult().stream().mapToDouble(book -> book.getPrice()).max().orElse(0));
+		}
+		
+		for(BookCard book : common) { // handle the price comparing
 			
-			Collections.sort(alternatives, Comparator.comparing(Book::getPrice));
+			List<BookCard> alternatives = common.stream().filter(b -> b.equals(book)).collect(Collectors.toList());
 			
-			Book b = alternatives.get(0); // lowest price
-			b.setLowestPrice(true);
+			Collections.sort(alternatives, Comparator.comparing(BookCard::getPrice));
+			
+			double lowest = alternatives.get(0).getPrice(); // lowest price
+			
+			resultSet.forEach(result -> result.getResult().stream().filter(b -> b.equals(book) && b.getPrice() == lowest).forEach(b -> b.setLowestPrice(true)));
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package com.tdonuk.bookservice.service;
 
 import com.tdonuk.bookservice.model.Author;
+import com.tdonuk.bookservice.model.BookSource;
 import com.tdonuk.bookservice.model.entity.Book;
 import com.tdonuk.bookservice.model.repository.BookPagingRepository;
 import com.tdonuk.bookservice.model.repository.BookRepository;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -33,7 +35,7 @@ public class BookService {
 
     public Book save(final Book book) {
         if(null != book.getIsbn()) {
-            if(! exists(book.getIsbn())) {
+            if(! exists(book.getIsbn(), book.getSource())) {
             	Date now = new Date();
                 book.setCreationDate(now);
                return bookRepository.save(book);
@@ -47,53 +49,39 @@ public class BookService {
         }
     }
     
-    public List<Book> saveMultiple(List<Book> books) {
-    	List<Book> toSave = new ArrayList<Book>();
+    @Transactional
+    public List<Book> saveMultiple(List<Book> books) throws Exception {
     	
-    	try {
-        	for(Book book : books) {
-        		if(null != book.getIsbn() && !"".equals(book.getIsbn())) {
-        			if(! exists(book.getIsbn())) { // if does not exist, save it
-        				Date now = new Date();
-        				
-            			book.setCreationDate(now);
-            			book.setLastSeenInSearch(now);
-            			toSave.add(book);
-        			}
-        			else { // if exists, give the id and return it
-        				Book b = findByIsbn(book.getIsbn());
-        				
-        				book.setId(b.getId());
-        				book.setCreationDate(b.getCreationDate());
-        				book.setLastSeenInSearch(updateLastSeen(book).getLastSeenInSearch());
-        			}
+    	List<Book> processed = new ArrayList<>();
+    	
+    	for(Book book : books) {
+    		try {
+        		Book b = findByIsbnAndSource(book.getIsbn(), book.getSource());
+        		
+        		if(b == null) {
+        			
+        			book.setCreationDate(new Date());
+        			book.setLastSeenInSearch(new Date());
+        			
+        			b = save(book);
+        			
+        			processed.add(b);
         		}
-        	}
-    	} catch(Exception e) {
-    		System.err.println(e.getMessage());
+        		
+        		else {
+        			updateLastSeenInSearch(b);
+        			
+        			processed.add(b);
+        		}	
+    		} catch(Exception e) {
+    			System.out.println("ERROR WHILE SAVING BOOK: " + e.getMessage());
+    			continue;
+    		}
     	}
     	
-    	bookRepository.saveAll(toSave);
-    	
-    	return Collections.unmodifiableList(books);
+    	return processed;
     }
     
-    @Transactional
-    public Book updateLastSeen(Book book) {
-    	if(exists(book.getIsbn()) && 0 != book.getId()) {
-    		EntityManager em = emf.createEntityManager();
-        	
-        	em.getTransaction().begin();
-        	book = em.find(Book.class, book.getId());
-        	
-        	book.setLastSeenInSearch(new Date());
-        	
-        	em.getTransaction().commit();
-        	
-        	return book;
-    	}
-    	return null;
-    }
 
     public Book delete(final long id) {
         if(bookRepository.existsById(id)) {
@@ -108,10 +96,23 @@ public class BookService {
     public Book findById(final long id) {
         return bookRepository.findById(id).orElse(null);
     }
+    
+    public void updateLastSeenInSearch(Book book) throws Exception{
+    	try {
+    		book.setLastSeenInSearch(new Date());
+    		bookRepository.updateLastSeen(book.getId(), book.getLastSeenInSearch());
+    	} catch(Exception e) {
+    		throw e;
+    	}
+    }
 
-    public Book findByIsbn(final String isbn) {
+    public Book findByIsbnAndSource(final String isbn, final BookSource source) throws Exception {
+    	return bookRepository.findByIsbnAndSource(isbn, source).orElse(null);
+    }
+    
+    public List<Book> findAllByIsbn(final String isbn) {
         if (exists(isbn)) {
-            return bookRepository.findByIsbn(isbn).orElse(null);
+            return bookRepository.findAllByIsbn(isbn);
         }
         return null;
     }
@@ -138,6 +139,10 @@ public class BookService {
 
     public boolean exists(final String isbn) {
         return bookRepository.existsByIsbn(isbn) ? true : false;
+    }
+    
+    public boolean exists(final String isbn, final BookSource source) {
+    	return bookRepository.existsByIsbnAndSource(isbn, source);
     }
 
 }

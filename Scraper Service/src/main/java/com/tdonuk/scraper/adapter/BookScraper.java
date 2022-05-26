@@ -29,19 +29,71 @@ public interface BookScraper {
 		
 		book = new Book();
 		
-		parseTitle(book);
-		parseIsbn(book);
-		parseDescription(book);
-		parsePrice(book);
-		parseRateCount(book);
-		parseRating(book);
-		parseImageUrl(book);
-		parseBookUrl(book);
-		parseTags(book);
-		parseLanguage(book);
-		parseAuthors(book);
-		parsePageCount(book);
-		parsePublishDate(book);	
+		try {
+			parseBookUrl(book);
+		} catch (Exception e) {
+			throw e;
+		}
+		try {
+			parseTitle(book);
+		} catch (Exception e) {
+			
+		}
+		try {
+			parseIsbn(book);
+		} catch (Exception e) {
+
+		}
+		try {
+			parseDescription(book);
+		} catch (Exception e) {
+
+		}
+		try {
+			parsePrice(book);
+		} catch (Exception e) {
+
+		}
+		try {
+			parseRateCount(book);
+		} catch (Exception e) {
+
+		}
+		try {
+			parseRating(book);
+		} catch (Exception e) {
+
+		}
+		try {
+			parseImageUrl(book);
+		} catch (Exception e) {
+
+		}
+		try {
+			parseTags(book);
+		} catch (Exception e) {
+
+		}
+		try {
+			parseLanguage(book);
+		} catch (Exception e) {
+
+		}
+		try {
+			parseAuthors(book);
+		} catch (Exception e) {
+
+		}
+		try {
+			parsePageCount(book);
+		} catch (Exception e) {
+
+		}
+		try {
+			parsePublishDate(book);
+		} catch (Exception e) {
+
+		}	
 		
 		return book;
 	}

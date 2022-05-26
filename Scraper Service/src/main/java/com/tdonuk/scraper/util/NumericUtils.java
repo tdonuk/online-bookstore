@@ -11,4 +11,13 @@ public class NumericUtils {
 			return false;
 		}
 	}
+	
+	public static boolean isDouble(String s) {
+		try {
+			Double.parseDouble(s);
+			return true;
+		} catch(NumberFormatException e) {
+			return false;
+		}
+	}
 }

@@ -40,7 +40,7 @@ class SearchPage extends React.Component {
                 errorMessage: err.response.data,
                 loading: false,
                 searched: true,
-            })
+            });
         });
     }
   }

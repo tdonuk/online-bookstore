@@ -1,7 +1,8 @@
 package com.tdonuk.bookservice.model;
 
+
 public enum BookSource {
-	KITAPYURDU("Kitapyurdu"), HEPSIBURADA("Hepsiburada"), IDEFIX("İdefix"), AMAZON("Amazon");
+	KITAPYURDU("Kitapyurdu"), IDEFIX("İdefix"), DR("D&R");
 	
 	String text;
 	BookSource(String text) {

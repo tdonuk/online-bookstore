@@ -23,8 +23,8 @@ class BookShelf extends React.Component {
     const{bookList, compare} = this.state;
 
     let list;
-    list = bookList.map((book) =>
-      <BookCard key={book.isbn} book={book} compare={compare}></BookCard>
+    list = bookList.map((book, index) =>
+      <BookCard key={index} book={book} compare={compare}></BookCard>
     );
     return(
       <div>

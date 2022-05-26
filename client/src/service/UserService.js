@@ -1,7 +1,6 @@
 import axios from 'axios'
 
 const URL = "http://localhost:8765/api/user";
-let currentUser = null;
 
 class UserService {
   login(user) {
