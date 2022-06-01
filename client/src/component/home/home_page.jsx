@@ -3,12 +3,10 @@ import '../../common/app.css';
 import './home_page.css';
 import PageHeader from "../fragment/PageHeader";
 import BookService from "../../service/BookService";
-import BookCard from "../fragment/BookCard";
 import LoadingScreen from "../modal/LoadingScreen";
 import ModalMessage from "../modal/ModalMessage";
+import BookCard from "../fragment/BookCard";
 import UserService from "../../service/UserService";
-import LoginPage from "../auth/login_page";
-import BookShelf from "../fragment/BookShelf";
 
 export default class HomePage extends React.Component {
     constructor(props) {
@@ -20,59 +18,121 @@ export default class HomePage extends React.Component {
             user: JSON.parse(localStorage.getItem("user")),
         }
 
-        this.loadData = this.loadData.bind(this);
+        this.handleFavourite = this.handleFavourite.bind(this);
     }
 
     componentDidMount() {
+        const {user} = this.state;
+
         this.setState({loading: true});
+
+        if (user) {
+            UserService.getLoggedUser()
+            {
+                this.setState({
+                    user: JSON.parse(localStorage.getItem("user")),
+                });
+            }
+        }
 
         this.loadData();
     }
 
     loadData() {
-        BookService.getBookList().then(response => {
-            console.log(response.data);
+        BookService.getLastSearches().then(response => {
             this.setState({
-                bookList: response.data.content,
+                lastSearched: response.data.content,
                 loading: false,
             });
-        })
-    } 
+        }).catch(err => {
+            this.setState({
+                loading: false,
+                errorMessage: "Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz",
+            })
+        });
+
+        BookService.getMostLiked().then(response => {
+            this.setState({
+                mostLiked: response.data.content,
+                loading: false,
+            });
+        }).catch(err => {
+            this.setState({
+                loading: false,
+                errorMessage: "Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz",
+            })
+        });
+    }
+
+    handleFavourite() {
+        UserService.getLoggedUser().then(response => {
+            this.loadData();
+            this.setState({
+                user: response,
+            });
+        });
+    }
 
 
     render() {
-        const{bookList, loading, errorMessage} = this.state;
+        const {lastSearched, mostLiked, loading, errorMessage, user} = this.state;
 
-        const books = () => bookList.map((book) =>
-            <BookCard key={book.isbn} book={book} compare={false}></BookCard>
-        );
+        if (lastSearched) lastSearched.sort(() => Math.random() - 0.5);
+        if (mostLiked) mostLiked.sort(() => (Math.random() > 0.5) ? 1 : -1);
+
+        const books = (bookList) => {
+            return (
+                bookList.map((book) => {
+                        if (!user) {
+                            return (
+                                <BookCard key={book.id} book={book} compare={false}/>
+                            );
+                        } else {
+                            return (
+                                <BookCard key={book.id} book={book} compare={false}
+                                          favourite={false} favCount={book.favoruiteCount} handleFavourite={this.handleFavourite}></BookCard>
+                            );
+                        }
+                    }
+                )
+            );
+        }
 
         return (
-            <div className="container secondary-background">
+            <div className="container primary-background">
                 {<PageHeader/>}
 
-                { errorMessage &&
-                    <ModalMessage message={errorMessage} subtitle={"Bir hata oluştu"} id="errorModal" type="error" title="Hata"/>
+                {errorMessage &&
+                <ModalMessage message={errorMessage} subtitle={"Bir hata oluştu"} id="errorModal" type="error"
+                              title="Hata"/>
                 }
 
                 <div className="page-body">
-                { loading &&
+                    {loading &&
                     <div className="big-alert">
                         <LoadingScreen/>
                     </div>
-                }
-                <section>
-                { bookList && 
-                <div className="book-shelf-container">
-                    <div>
-                        <h1 className="shelf-title left-align flex-center-align">Son arananlar</h1>
+                    }
+                    {lastSearched &&
+                    <div className="book-shelf-container">
+                        <div>
+                            <h1 className="shelf-title left-align flex-center-align">Son arananlar</h1>
+                        </div>
+                        <div className="horizontal-shelf">
+                            {books(lastSearched)}
+                        </div>
                     </div>
-                    <div className="horizontal-shelf">
-                        {books()}
+                    }
+                    {mostLiked &&
+                    <div className="book-shelf-container">
+                        <div>
+                            <h1 className="shelf-title left-align flex-center-align">En sevilenler</h1>
+                        </div>
+                        <div className="horizontal-shelf">
+                            {books(mostLiked)}
+                        </div>
                     </div>
-                </div>
-                }
-                </section>
+                    }
                 </div>
                 <div className="page-footer">
 

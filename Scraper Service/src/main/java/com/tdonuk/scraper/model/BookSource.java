@@ -1,6 +1,7 @@
 package com.tdonuk.scraper.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.tdonuk.scraper.adapter.DRAdapter;
 import com.tdonuk.scraper.adapter.IdefixAdapter;
 import com.tdonuk.scraper.adapter.KitapyurduAdapter;
@@ -20,7 +21,8 @@ public enum BookSource {
 	public ScraperAdapter adapter() {
 		return this.adapter;
 	}
-	
+
+	@JsonValue
 	public String text() {
 		return this.text;
 	}

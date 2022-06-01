@@ -1,4 +1,6 @@
 export class BookCardEntity {
+    id;
+    lastSeenInSearch;
     title;
     url;
     lowestPrice;

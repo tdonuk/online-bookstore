@@ -19,7 +19,7 @@ public class ResultWrapper {
 	private List<SearchResult> resultSet;
 	
 	@JsonIgnore
-	private Set<BookCard> common; 
+	private List<BookCard> common;
 	
 	public ResultWrapper(List<SearchResult> resultSet) {
 		this.resultSet = resultSet;
@@ -28,7 +28,7 @@ public class ResultWrapper {
 	}
 	
 	private void  process() {
-		common = new HashSet<>();
+		common = new ArrayList<>();
 		
 		for(SearchResult result : resultSet) { // add all results to one list
 			common.addAll(result.getResult());
@@ -56,7 +56,11 @@ public class ResultWrapper {
 			
 			double lowest = alternatives.get(0).getPrice(); // lowest price
 			
-			resultSet.forEach(result -> result.getResult().stream().filter(b -> b.equals(book) && b.getPrice() == lowest).forEach(b -> b.setLowestPrice(true)));
+			for(SearchResult result : resultSet) {
+				for(BookCard b : result.getResult()) {
+					if(b.equals(book) && b.getPrice() == lowest) b.setLowestPrice(true);
+				}
+			}
 		}
 	}
 }

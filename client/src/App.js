@@ -8,6 +8,8 @@ import BookDetails from './component/book/BookDetails';
 import SearchPage from './component/home/SearchPage';
 import { disableReactDevTools } from '@fvilers/disable-react-devtools';
 import { Component } from 'react';
+import ProfilePage from "./component/auth/ProfilePage";
+import AboutScreen from "./component/home/AboutScreen";
 
 disableReactDevTools();
 
@@ -34,7 +36,9 @@ export default class App extends Component {
               <Route path="/signup" element={<SignupPage/>}/>
               <Route path="/home" element={<HomePage/>}/>
               <Route path="/" element={<HomePage/>}/>
+              <Route path="/profile" element={<ProfilePage/>}/>
               <Route path="/search" element={<SearchPage/>}/>
+              <Route path="/about" element={<AboutScreen/>}/>
               <Route path="/book/details" element={<BookDetails/>}/>
           </Routes>
       </BrowserRouter>

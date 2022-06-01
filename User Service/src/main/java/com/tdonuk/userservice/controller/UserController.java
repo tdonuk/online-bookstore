@@ -5,25 +5,19 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.tdonuk.userservice.model.entity.SearchResultBookEntity;
 import com.tdonuk.userservice.model.entity.UserEntity;
-import com.tdonuk.userservice.model.repository.UserRepository;
 import com.tdonuk.userservice.service.UserService;
 import com.tdonuk.userservice.util.JwtUtils;
-import com.tdonuk.userservice.util.TimeConstants;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -89,6 +83,72 @@ public class UserController {
     @GetMapping("/")
     public ResponseEntity<?> getUser(@RequestParam(name = "username") String username) {
         return ResponseEntity.ok(userService.findByUsername(username));
+    }
+
+    @GetMapping("/currentUser")
+    public ResponseEntity<?> getUser(HttpServletRequest request) {
+        try {
+            String authorization = request.getHeader("Authorization");
+
+            UserEntity user = userService.findByEmail(JwtUtils.getUser(authorization));
+
+            user.setPassword("[PROTECTED]");
+            return ResponseEntity.ok(user);
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+    }
+
+    @PostMapping("/detail/favourites/add")
+    public ResponseEntity<?> addBooksToFavourites(@RequestBody List<SearchResultBookEntity> books, HttpServletRequest request) {
+        try {
+            String authorization = request.getHeader("Authorization");
+            userService.addToFavourites(JwtUtils.getUser(authorization), books);
+
+            return ResponseEntity.ok(books.size() + " kitap başarıyla favorilere eklendi.");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/detail/favourites/remove")
+    public ResponseEntity<?> removeBooksFromFavourites(@RequestBody List<SearchResultBookEntity> books, HttpServletRequest request) {
+        try {
+            String authorization = request.getHeader("Authorization");
+            userService.removeFromFavourites(JwtUtils.getUser(authorization), books);
+
+            return ResponseEntity.ok(books.size() + " kitap başarıyla favorilere eklendi.");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<?> getHistory(HttpServletRequest request) {
+        try {
+            String authorization = request.getHeader("Authorization");
+
+            return ResponseEntity.ok(userService.findByEmail(JwtUtils.getUser(authorization)).getSearches());
+        } catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/detail/history")
+    public ResponseEntity<?> addBooksToHistory(@RequestBody List<SearchResultBookEntity> books, HttpServletRequest request) {
+        try {
+            String authorization = request.getHeader("Authorization");
+            userService.addToHistory(JwtUtils.getUser(authorization), books);
+
+            return ResponseEntity.ok().build();
+        } catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/check")

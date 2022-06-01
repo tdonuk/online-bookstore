@@ -227,7 +227,7 @@ public class IdefixAdapter extends ScraperAdapter{
 		for(Element el : elements) {
 			card = new BookCard();
 			
-			card.setSource(getSource());
+			card.setSource(getSource().text());
 			
 			String title = el.select("a").attr("title");
 			String url = el.select("a").attr("href");

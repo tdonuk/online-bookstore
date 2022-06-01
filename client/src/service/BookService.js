@@ -12,9 +12,18 @@ class BookService {
         return headers;
     }
 
-    getBookList() {
+    getLastSearches() {
         return axios({
-            url: URL+"/public/last",
+            url: URL+"/public/search/last",
+            method:"GET",
+            headers: this.defaultHeaders(),
+            withCredentials: false,
+        });
+    }
+
+    getMostLiked() {
+        return axios({
+            url: URL+"/public/search/mostLiked",
             method:"GET",
             headers: this.defaultHeaders(),
             withCredentials: false,

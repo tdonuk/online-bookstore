@@ -30,4 +30,8 @@ export class User {
     title: "",
     number: ""
   }
+
+  favourites = [];
+  searches = [];
+
 }

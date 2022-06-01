@@ -6,6 +6,7 @@ import './form_page.css';
 import Info from "../fragment/Info";
 import Error from "../fragment/Error";
 import LoadingScreen from '../modal/LoadingScreen';
+import PageHeader from "../fragment/PageHeader";
 
 export default class LoginPage extends React.Component {
     constructor(props) {
@@ -34,6 +35,8 @@ export default class LoginPage extends React.Component {
     }
 
     handleLogin(e) {
+        e.preventDefault();
+
         this.setState({submitted: true});
 
         let{user} = this.state;
@@ -59,8 +62,9 @@ export default class LoginPage extends React.Component {
             window.location = this.state.redirect;
 
         }).catch(error => {
+            console.log(error);
             this.setState({
-                errorMessage: error.response.data,
+                errorMessage: "Giriş yapılamadı",
                 loading: false
             })
         });
@@ -71,12 +75,13 @@ export default class LoginPage extends React.Component {
         const params = new URLSearchParams(window.location.search);
 
         return(
-            <div className="container primary-background flex">
+            <div id="#formBackground" className="container primary-background flex flex-direction-column">
+                <PageHeader/>
                 {loading &&
                 <LoadingScreen/>
                 }
                 <div className="form-container flex-center-align">
-                    <div className="form center-form">
+                    <form className="form center-form" onSubmit={this.handleLogin}>
                         <h1 className="big-title primary"><strong>Giriş</strong></h1>
                         <div className="form-control-group">
                             <div className="form-control flex-direction-column">
@@ -100,7 +105,7 @@ export default class LoginPage extends React.Component {
                             }
 
                             { params.get("logout") != null &&
-                            <Info message={"Başarıyla çıkış yaptınız"}/>
+                            <Info message={"Sistemden çıkış yaptınız"}/>
                             }
                             { params.get("signup") != null &&
                             <Info message={"Başarıyla hesap oluşturdunuz"}/>
@@ -113,7 +118,7 @@ export default class LoginPage extends React.Component {
                                 <a className="link standard-link" href="/signup">Yeni bir hesap oluşturun</a>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         )

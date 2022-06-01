@@ -1,6 +1,7 @@
 import React from "react";
 import Dropdown from "./Dropdown";
 import {FaRegQuestionCircle, FaRegUserCircle, FaCogs, FaRegArrowAltCircleLeft} from "react-icons/fa";
+import UserService from "../../service/UserService";
 
 export default class PageHeader extends React.Component {
     constructor(props) {
@@ -8,7 +9,7 @@ export default class PageHeader extends React.Component {
 
         const user = JSON.parse(localStorage.getItem("user"));
 
-        if(user) { // authenticated
+        if(user) {
             const userMenuContent = [
                 {
                     text: "Profil",
@@ -17,16 +18,9 @@ export default class PageHeader extends React.Component {
                     icon: <FaRegUserCircle className="mini-icon flex-center-align"/>
                 },
                 {
-                    text: "Ayarlar",
-                    action: () => window.location = "/settings",
-                    key: "settings",
-                    icon: <FaCogs className="mini-icon flex-center-align"/>
-                },
-                {
                     text: "Çıkış",
                     action: () => {
-                        localStorage.clear();
-                        window.location = "/login?logout"
+                        UserService.logout();
                     },
                     key: "logout",
                     icon: <FaRegArrowAltCircleLeft className="mini-icon flex-center-align"/>

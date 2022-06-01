@@ -29,7 +29,7 @@ class UserServiceApplicationTests {
         user.setAccountCreationDate(new Date());
         user.setUsername("tdonuk");
         user.setPassword("1234");
-        user.setEmail("tdonuk@email.com");
+        user.setEmail("rtdonuk@email.com");
         user.setName(new Name());
         user.getName().setFirstname("Taha");
         user.getName().setLastname("Dönük");
