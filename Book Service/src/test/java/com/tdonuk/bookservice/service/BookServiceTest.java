@@ -5,11 +5,19 @@ import com.tdonuk.bookservice.model.Author;
 import com.tdonuk.bookservice.model.Name;
 import com.tdonuk.bookservice.model.UserDTO;
 import com.tdonuk.bookservice.model.entity.Book;
+import com.tdonuk.bookservice.model.entity.SearchResultBookEntity;
+import com.tdonuk.bookservice.model.entity.UserEntity;
+import com.tdonuk.bookservice.model.repository.BookEntityPageableRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @SpringBootTest
@@ -19,6 +27,8 @@ public class BookServiceTest {
 
     @Autowired
     private UserClient client;
+    @Autowired
+    private BookEntityPageableRepository bookEntityPageableRepository;
 
     @Test
     void canLoadBook() {
@@ -32,7 +42,7 @@ public class BookServiceTest {
         book.setPublishDate(date);
 
         book.setDescription("Örnek kitap açıklaması");
-        book.setTitle("Kız tavlamaya giriş");
+        book.setTitle("Örnek Kitap İsmi");
         book.setInDiscount(true);
         book.setIsbn("123456");
         book.setLanguage("tr");
@@ -46,7 +56,7 @@ public class BookServiceTest {
     }
 
     @Test
-    void canFindBook() {
+    void canFindBookWithAuthor() {
         long id = 8;
 
         Book b = service.findById(id);
@@ -62,8 +72,16 @@ public class BookServiceTest {
     void canGetUser() {
         // example token
         String token = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0YWhhMiIsInJvbGVzIjpbIlVTRVIiXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDAwL2FwaS91c2VyL2xvZ2luIiwiZXhwIjoxNjUxNzgxMzIzfQ.Nnr0hV_qDbD0wpbAQXl35W08fS0dU9EgODtEZx0Wg5w";
-        UserDTO user = client.getUser(6, token);
+        UserEntity user = client.getUser(token);
 
         System.out.println(user);
+    }
+
+    @Test
+    void canGetMostLiked() {
+        Pageable p = PageRequest.of(0 ,10);
+        Page<SearchResultBookEntity> books = bookEntityPageableRepository.findAll(p);
+
+        books.getContent().forEach(e -> System.out.println(e.getFavouriters().size()));
     }
 }
