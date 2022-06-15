@@ -22,13 +22,13 @@ class BookShelf extends React.Component {
   render() {
     const{bookList, compare} = this.state;
 
-    let list;
-    list = bookList.map((book, index) =>
-      <BookCard key={index} book={book} compare={compare}></BookCard>
-    );
+    const mapper = () => bookList.map((book, index) => {
+      <BookCard key={index} book={book} compare={compare}/>
+    });
+
     return(
       <div>
-        {list}
+        { bookList && mapper()}
       </div>
     );
 

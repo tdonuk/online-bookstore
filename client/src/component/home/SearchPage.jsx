@@ -5,6 +5,7 @@ import PageHeader from '../fragment/PageHeader';
 import LoadingScreen from '../modal/LoadingScreen';
 import Error from '../fragment/Error';
 import { Book } from '../../model/entity/Book';
+import BookCard from "../fragment/BookCard";
 
 class SearchPage extends React.Component {
   constructor() {
@@ -48,16 +49,26 @@ class SearchPage extends React.Component {
   render() {
     const{user, loading, data, key, errorMessage} = this.state;
 
+      const mapper = (books) => books.map((book) =>
+          <BookCard key={book.id} book={book} compare={true}
+                    favourite={user.favourites.map(book => book.id).includes(book.id)}
+                    handleFavourite={this.getLoggedUser}/>
+      );
+
     const map = () => {
-        const shelf = data.resultSet.map(result => 
+        const shelf = data.resultSet.map(result =>
             <div className='shelf-wrapper' key={result.source}>
-                <h4 className='shelf-title'>{result.source}</h4>
-                <div className="search-info">
-                    <span>{"En düşük: " + parseFloat(result.lowestPrice).toFixed(2) + " ₺"}</span>
-                    <span>{"Ortalama: " + parseFloat(result.averagePrice).toFixed(2) + " ₺"}</span>
-                    <span>{"En yüksek: " + parseFloat(result.highestPrice).toFixed(2) + " ₺"}</span>
+                <div>
+                    <h4 className='shelf-title'>{result.source}</h4>
+                    <div className="search-info">
+                        <span>{"En düşük: " + parseFloat(result.lowestPrice).toFixed(2) + " ₺"}</span>
+                        <span>{"Ortalama: " + parseFloat(result.averagePrice).toFixed(2) + " ₺"}</span>
+                        <span>{"En yüksek: " + parseFloat(result.highestPrice).toFixed(2) + " ₺"}</span>
+                    </div>
                 </div>
-                <BookShelf bookList={result.result} compare={true}/> 
+                <div>
+                    {mapper(result.result)}
+                </div>
             </div>
         );
         return shelf;

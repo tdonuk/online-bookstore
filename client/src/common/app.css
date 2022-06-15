@@ -154,7 +154,7 @@ input {
 }
 
 .standart-button:hover {
-    background-color: rgb(255,255,255, 0.76);
+    background-color: rgba(255,255,255, 0.76);
 }
 
 .action-element:hover {
@@ -175,8 +175,6 @@ input {
     width: 100%;
     height: 100%;
 
-    transition: 1s;
-
     top:0;
     left:0;
 
@@ -185,7 +183,7 @@ input {
     align-items: center;
     justify-content: center;
 
-    z-index: 1;
+    z-index: 2;
 
     transition: 1s all ease;
 
@@ -327,6 +325,7 @@ input {
 }
 
 .space-between {
+    display: flex;
     justify-content: space-between;
 }
 
@@ -428,8 +427,6 @@ input {
     padding: 10px;
     text-align: center;
 
-    display: flexbox;
-
     overflow: auto;
 }
 
@@ -438,7 +435,7 @@ input {
 }
 
 .horizontal-shelf {
-    overflow-x: auto;
+    overflow-x: scroll;
     max-height: 50vh;
     display: flex;
 }
@@ -446,16 +443,21 @@ input {
 .shelf-title {
     font-size: 2rem;
     text-align: center;
-    color: dimgrey;
+    color: #5c5353;
     font-weight: bold;
-    margin: 0;
-    padding: 10px;
-    width: fit-content;
+    margin: 10px;
+    padding: 15px;
+
+    text-align: left;
+
+    border-bottom: 1px solid gray;
 }
 
 .item-box {
     display: inline-flex;
     flex-direction: column;
+
+    position: relative;
 
     width: fit-content;
 
@@ -465,8 +467,9 @@ input {
 
     margin: 10px;
 
-    width: 180px;
-    min-height: 300px;
+    width: 120px;
+    min-width: 120px;
+    min-height: 220px;
 
     height: fit-content;
 
@@ -474,8 +477,7 @@ input {
 }
 
 .item-header {
-    display: inline-flex;
-    justify-content: space-between;
+    position: relative;
 
     color: inherit;
 }
@@ -511,6 +513,8 @@ input {
     flex-direction: column;
     align-items: center;
 
+    position: relative;
+
     color: inherit;
 }
 
@@ -526,16 +530,31 @@ input {
 .item-price {
     color: blue;
     font-size: 1.1rem;
+    position: relative;
+}
+
+.fav-count {
+    text-align: left;
+    position: absolute;
+    left:0;
+    top:-10px;
+    color: white;
+    background-color: rgba(111, 104, 104, 0.64);
+    padding: 2px;
+    border-radius: 5px;
 }
 
 .item-sub-info {
-    background-color: #63a6e073;
+    background-color: rgba(235, 242, 246, 0.62);
+    color: darkblue;
 
     padding: 7px;
     margin: 5px;
 
     font-weight: bold;
     font-size: 0.8rem;
+
+    z-index: 2;
 
     border-radius: inherit;
 
@@ -546,6 +565,8 @@ input {
     transition: 0.2s;
 
     border: 1px solid gray;
+
+    text-decoration: none;
 }
 
 .item-sub-info:hover {
@@ -556,5 +577,46 @@ input {
     display: flex;
     justify-content: space-between;
     padding: 0 20px;
+}
+
+.user-info-container {
+    padding: 10px;
     border-bottom: 1px solid gray;
+
+    padding: 10px;
+    margin: 10px;
+}
+
+.user-info-container span {
+    font-size: 1.5rem;
+}
+
+.favourite-button {
+    position: absolute;
+    width: fit-content;
+    height: fit-content;
+    padding: 2px;
+    top: -10px;
+    right: -10px;
+    background-color: rgba(85, 82, 82, 0.8);
+    text-align: center;
+    z-index: 1;
+    box-shadow: black 1px 1px 2px;
+    transition: 0.2s;
+    border-radius: 10px;
+}
+
+.favourite-button:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+    background-color: rgba(47, 46, 46, 0.71);
+}
+
+.big-icon {
+    text-align: center;
+}
+
+.p-content {
+    padding: 20px;
+    font-size: 1.3rem;
 }

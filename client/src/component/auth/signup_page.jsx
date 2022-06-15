@@ -4,6 +4,7 @@ import {User} from "../../model/entity/User";
 import "./form_page.css";
 import "../../common/app.css";
 import Error from "../fragment/Error";
+import PageHeader from "../fragment/PageHeader";
 
 export default class SignupPage extends React.Component {
     constructor(props) {
@@ -71,7 +72,8 @@ export default class SignupPage extends React.Component {
         const{user, loading, submitted, errorMessage} = this.state;
 
         return (
-            <div className="container primary-background flex">
+            <div className="container primary-background flex flex-direction-column">
+                <PageHeader/>
                 <div className="form-container flex-center-align">
                     <div className="form center-form">
                         <h1 className="big-title primary">Üyelik</h1>
