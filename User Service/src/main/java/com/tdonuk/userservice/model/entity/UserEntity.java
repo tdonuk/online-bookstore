@@ -1,5 +1,6 @@
 package com.tdonuk.userservice.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.tdonuk.userservice.model.Name;
 import com.tdonuk.userservice.model.Phone;
 import com.tdonuk.userservice.model.UserRole;
@@ -7,6 +8,8 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -36,4 +39,18 @@ public class UserEntity {
     private Date accountCreationDate;
     private Date lastLoginDate;
     private Date lastLogoutDate;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    @JoinTable(
+            name = "book_searches",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "id"))
+    private Set<SearchResultBookEntity> searches;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    @JoinTable(
+            name = "book_favourites",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "id"))
+    private Set<SearchResultBookEntity> favourites;
 }
