@@ -208,7 +208,7 @@ public class KitapyurduAdapter extends ScraperAdapter{
 		for(Element el : elements) {
 			card = new BookCard();
 			
-			card.setSource(getSource());
+			card.setSource(getSource().text());
 			
 			String title = el.select("div.name a").attr("title");
 			String url = el.select("div.name a").attr("href");

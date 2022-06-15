@@ -78,22 +78,12 @@ public class ScraperService {
 	}
 	
 	public Set<Book> parseBooks(Set<BookCard> products) throws Exception{		
-		Set<Book> books = new HashSet<Book>();
+		Set<Book> books = new HashSet();
 		
-		ExecutorService es = Executors.newFixedThreadPool(products.stream().map(card -> card.getSource().name()).collect(Collectors.toSet()).size());
-		
-		for(BookCard card : products) {
-			es.submit(() -> {
-				try {
-					BookSource source = Enum.valueOf(BookSource.class, card.getSource().name());
-					
-					books.addAll(source.adapter().parse(products.stream().filter(b -> b.getSource() == source).map(b -> b.getUrl()).collect(Collectors.toSet())));
-				} catch(Exception e) {
-					System.err.println("Error while parsing: " + e.getMessage());
-				}
+		ExecutorService es = Executors.newFixedThreadPool(products.stream().map(card -> card.getSource()).collect(Collectors.toSet()).size());
 
-			});
-		}
+		// TODO
+
 		es.shutdown();
 		es.awaitTermination(10, TimeUnit.SECONDS);
 		
